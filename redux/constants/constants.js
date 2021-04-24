@@ -1,0 +1,7 @@
+export const BASE_URL = 'http://192.168.1.7:3000/fakeapp';
+export const authAction = {
+  SIGNUP_SUCCESS: 'SIGNUP_SUCCESS',
+  SIGNUP_FAILURE: 'SIGNUP_FAILURE',
+  LOGIN_FAILURE: 'LOGIN_FAILURE',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+};

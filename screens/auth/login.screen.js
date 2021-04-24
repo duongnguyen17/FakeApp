@@ -1,34 +1,26 @@
-import {React, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {View, Text, Button, StyleSheet} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
-import {Login} from '../../redux/actions/auth.action';
+import {login} from '../../redux/actions/auth.action';
 
 function LoginScreen(props) {
   const [phonenumber, setPhonenumber] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  // useEffect(() => {
-  //   return () => {
-  //     setPhonenumber(phonenumber);
-  //     setPassword(password);
-  //     setError(error);
-  //   };
-  // }, [error, phonenumber, password]);
-
-  // const handleLogin = () => {
-  //   Login(phonenumber, password);
-  //   if (error === '') {
-  //     props.navigation.navigate('UserProfileScreen');
-  //   }
-  // };
+  const handleLogin = () => {
+    //console.log(phonenumber, password);
+    props.login(phonenumber, password);
+    console.log(props.token);
+    if (props.token != '' && props.error == '') {
+      props.navigation.navigate('UserProfileScreen');
+    }
+  };
   return (
     <View style={styles.body}>
       <TextInput
         placeholder="Phonenumber"
-        onChangeText={text => {
-          setPhonenumber(text);
+        onChangeText={phone => {
+          setPhonenumber(phone);
         }}
       />
 
@@ -39,13 +31,13 @@ function LoginScreen(props) {
           setPassword(pass);
         }}
       />
-      <Text style={{color: 'red', alignSelf: 'center'}}>{error}</Text>
+      <Text style={{color: 'red', alignSelf: 'center'}}>{props.error}</Text>
       <Button
         style={{backgroundColor: '#1a73e8', marginTop: '50%'}}
         uppercase={false}
         title="login"
         onPress={() => {
-          //handleLogin();
+          handleLogin(phonenumber, password);
         }}
       />
       <Text
@@ -62,17 +54,16 @@ function LoginScreen(props) {
     </View>
   );
 }
-// function mapStateToProp(state) {
-//   return {
-//     phonenumber: state.phonenumber,
-//     password: state.password,
-//     error: state.error,
-//   };
-// }
-// const mapDispatchToProp = {
-//   Login,
-// };
-export default LoginScreen;//connect(mapStateToProp, mapDispatchToProp)(LoginScreen);
+const mapStateToProp = state => {
+  return {
+    token: state.user.token,
+    error: state.user.error,
+  };
+};
+const mapDispatchToProp = {
+  login,
+};
+export default connect(mapStateToProp, mapDispatchToProp)(LoginScreen);
 
 const styles = StyleSheet.create({
   body: {
