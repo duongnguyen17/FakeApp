@@ -1,164 +1,199 @@
-import React, { useState } from 'react'
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, Switch } from 'react-native'
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Switch,
+} from 'react-native';
+import ActionSheet from 'react-native-actions-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-function Post() {
-  const [isEnabled, setIsEnabled] = useState(false)
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState)
+import {screenHeight, screenWidth} from '../constants';
+function Post(props) {
+  const [isEnabled, setIsEnabled] = useState(props.post.isClosed);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   return (
-    <View style={styles.post}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <TouchableOpacity style={styles.post}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={styles.customListView}>
-          <Image style={styles.avatar} source={require('../assets/anh_20173069.jpg')} />
+          <TouchableOpacity onPress={props.gotoUserProfile}>
+            <Image
+              style={styles.avatar}
+              source={{uri: props.post.autorAvatar}}
+            />
+          </TouchableOpacity>
           <View style={styles.infoWrapper}>
             <View style={styles.namesWrapper}>
-              <TouchableOpacity >
-                <Text style={{ fontSize: 16, fontWeight: '500' }}>Duong Nguyen</Text>
+              <TouchableOpacity onPress={props.gotoUserProfile}>
+                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                  {props.post.authorName}
+                </Text>
               </TouchableOpacity>
             </View>
-            <View >
-              <Text style={{ color: '#333', fontSize: 14 }}>time</Text>
+            <View>
+              <Text style={{color: 'gray', fontSize: 14}}>
+                {props.post.created}
+              </Text>
             </View>
           </View>
         </View>
         <Switch
           //disabled={true}
-          trackColor={{ false: "#767577", true: "#cceeff" }}
-          thumbColor={isEnabled ? "#66ccff" : "#f4f3f4"}
+          trackColor={{false: '#767577', true: '#cceeff'}}
+          thumbColor={isEnabled ? '#66ccff' : '#f4f3f4'}
           onValueChange={toggleSwitch}
           value={isEnabled}
-          style={{ right: 20 }}
-
+          style={{right: 20}}
         />
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.paragraph}>content</Text>
+        <Text style={styles.paragraph}>{props.post.described}</Text>
       </View>
-      <TouchableOpacity >
+      <TouchableOpacity onPress={props.gotoUserProfile}>
         <View style={styles.imageContainer}>
-          {/* <Image style={{height:300}} source={{uri: 'https://ctt-sis.hust.edu.vn/Content/Anh/anh_20173069.JPG'}}/> */}
+          {/* <Image style={{height:300}} source={{uri: 'https://ctt-sis.hust.edu.vn/Content/Anh/avatar.JPG'}}/> */}
         </View>
       </TouchableOpacity>
       <View horizontal={true} style={styles.reactionContainer}>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}><MaterialCommunityIcons
-          name="thumbs-up"
-          color="#66ccff"
-          backgroundColor="#fff"
-          size={20}
-          style={{ marginLeft: 10 }}
-        /><Text style={{ fontSize: 12, color: 'gray' }}>147</Text></TouchableOpacity>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}><MaterialCommunityIcons
-          lineBreakMode={false}
-          name="comment-alt"
-          color="gray"
-          backgroundColor="white"
-        /><Text style={{ fontSize: 12, color: 'gray' }}>12 comments</Text></TouchableOpacity>
-        <TouchableOpacity style={{
-          position: 'absolute',
-          fontSize: 14,
-          padding: 10,
-          right: 10
-        }}>
-          <Text style={{ fontSize: 12, textAlignVertical: 'center', color: 'gray' }}>18 Share</Text>
+        <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+          <MaterialCommunityIcons
+            name="bookmark-outline"
+            color="#66ccff"
+            backgroundColor="#fff"
+            size={18}
+            style={{marginLeft: 10}}
+          />
+          <Text style={{fontSize: 12, color: 'gray'}}>
+            {props.post.interestedNum}
+          </Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: 20,
+          }}>
+          <Text style={{fontSize: 12, color: 'gray'}}>
+            {props.post.commentNum} comments
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            fontSize: 14,
+            padding: 10,
+            right: 10,
+          }}>
+          <Text
+            style={{fontSize: 12, textAlignVertical: 'center', color: 'gray'}}>
+            18 Share
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.commentContainer}>
         <TouchableOpacity style={styles.likeIcon}>
-          <MaterialCommunityIcons size={23} name="thumbs-up" color="#66ccff" />
+          <MaterialCommunityIcons
+            size={26}
+            name="bookmark-outline"
+            color="#66ccff"
+          />
         </TouchableOpacity>
         <View style={styles.commentInput}>
-          <TouchableOpacity style={styles.commentInputWrapper}>
+          <TouchableOpacity
+            style={styles.commentInputWrapper}
+            onPress={props.gotoComment}>
             <Text>Comment...</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.shareIcon}>
-          <MaterialCommunityIcons name="share-alt" color="gray" />
+          <MaterialCommunityIcons name="share" color="gray" size={26} />
         </TouchableOpacity>
       </View>
-    </View>
-  )
+    </TouchableOpacity>
+  );
 }
 
-export default Post
-const screenWidth = Math.round(Dimensions.get('window').width);
+export default Post;
+
 const styles = StyleSheet.create({
   customListView: {
     padding: 15,
     width: screenWidth - 40,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 50
+    width: 45,
+    height: 45,
+    borderRadius: 45,
   },
   infoWrapper: {
-    marginLeft: 8
+    marginLeft: 8,
   },
   namesWrapper: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   extraInfoWrapper: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   post: {
-    marginTop: 10,
+    marginTop: 5,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    shadowOffset: { height: 0, width: 0 },
+    shadowOffset: {height: 0, width: 0},
+    borderRadius: 10,
   },
   commentInputWrapper: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     borderRadius: 20,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
-  paragraph: {
-
-  },
+  paragraph: {},
   contentContainer: {
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   imageContainer: {
     marginTop: 5,
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   reactionContainer: {
     position: 'relative',
     flexDirection: 'row',
     flexWrap: 'nowrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 20,
   },
-  shareIcon: {
-  },
+  shareIcon: {},
   commentContainer: {
     flexDirection: 'row',
     padding: 10,
-    borderColor: "red",
+    borderColor: 'red',
     borderStyle: 'dashed',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
-  likeIcon: {
-  },
+  likeIcon: {},
   commentInput: {
     borderWidth: 0.5,
     borderColor: 'gray',
     borderRadius: 20,
     marginLeft: 10,
+    marginRight: 10,
     height: 30,
-    width: screenWidth - 15 * 2 - 60,
+    width: screenWidth - 100,
   },
   btnSendComment: {
     width: 30,
     height: 30,
     textAlign: 'center',
-    lineHeight: 30
-  }
-})
+    lineHeight: 30,
+  },
+});

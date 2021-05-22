@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import Store from './redux/store/store';
 
 // import LoginScreen from './screens/auth/login.screen';
@@ -13,6 +13,10 @@ import Store from './redux/store/store';
 import HomeScreen from './screens/home/home.screen';
 import UserProfileScreen from './screens/userProfile/userProfile.screen';
 import NotificationScreen from './screens/notifications/notification.screen';
+import ChangeProfileScreen from './screens/userProfile/changeProfile.screen';
+import Comment from './screens/comments.screen';
+import CreatePostScreen from './screens/createPostScreen.screen';
+import PostDetail from './screens/PostDetail';
 
 const Stack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -23,7 +27,7 @@ const HomeTab = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        gestureResponseDistance: { vertical: 800 },
+        gestureResponseDistance: {vertical: 800},
       }}>
       <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
@@ -32,7 +36,7 @@ const HomeTab = () => {
 
 const NotificationTab = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Notification" component={NotificationScreen} />
     </Stack.Navigator>
   );
@@ -40,7 +44,7 @@ const NotificationTab = () => {
 
 const ProfileTab = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Profile" component={UserProfileScreen} />
     </Stack.Navigator>
   );
@@ -48,28 +52,44 @@ const ProfileTab = () => {
 
 const TabBar = () => {
   return (
-    <MainTab.Navigator tabBarOptions={{ showLabel: false }}>
+    <MainTab.Navigator tabBarOptions={{showLabel: false}}>
       <MainTab.Screen
         name="HomeTab"
         component={HomeTab}
         options={{
-          tabBarIcon: ({ focused }) => (<MaterialCommunityIcons name="home" size={26} color={focused ? '#318bfb' : '#ddd'} />)
+          tabBarIcon: ({focused}) => (
+            <MaterialCommunityIcons
+              name="home"
+              size={40}
+              color={focused ? '#318bfb' : '#ddd'}
+            />
+          ),
         }}
       />
       <MainTab.Screen
         name="NotificationTab"
         component={NotificationTab}
         options={{
-          tabBarIcon: ({ focused }) =>(
-              <MaterialCommunityIcons name="bell" size={26} color={focused ? '#318bfb' : '#ddd'} />),
+          tabBarIcon: ({focused}) => (
+            <MaterialCommunityIcons
+              name="bell"
+              size={40}
+              color={focused ? '#318bfb' : '#ddd'}
+            />
+          ),
         }}
       />
       <MainTab.Screen
         name="ProfileTab"
         component={ProfileTab}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <MaterialCommunityIcons name="user-circle" size={26} color={focused ? '#318bfb' : '#ddd'} />),
+          tabBarIcon: ({focused}) => (
+            <MaterialCommunityIcons
+              name="account"
+              size={40}
+              color={focused ? '#318bfb' : '#ddd'}
+            />
+          ),
         }}
       />
     </MainTab.Navigator>
@@ -83,11 +103,19 @@ const App = () => {
           <MainStack.Screen
             name="TabBar"
             component={TabBar}
-            options={{ headerShown: false }}
+            options={{headerShown: false}}
           />
-          {/* <MainStack.Screen
-          name="UserProfile"
-          component={UserProfileScreen}/> */}
+          <MainStack.Screen name="UserProfile" component={UserProfileScreen} />
+          <MainStack.Screen
+            name="ChangeProfile"
+            component={ChangeProfileScreen}
+          />
+          <MainStack.Screen name="Comment" component={Comment} />
+          <MainStack.Screen
+            name="CreatePostScreen"
+            component={CreatePostScreen}
+          />
+          <MainStack.Screen name="PostDetail" component={PostDetail} />
         </MainStack.Navigator>
       </NavigationContainer>
     </Provider>

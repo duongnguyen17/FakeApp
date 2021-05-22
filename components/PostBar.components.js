@@ -1,26 +1,39 @@
 import React from 'react';
 
-import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function PostBar(props) {
-
   // onPress = {props.gotoUserProfile}
   // onPress={props.onFullPostToolPressHandler}
   // onPress={props.onPhotoUploaderPressHandler}
   return (
     <View style={styles.container}>
       <View style={styles.postToolWrapper}>
-        <TouchableOpacity activeOpacity={0.5} style={styles.userAvatarWrapper} >
-            <Image source={{ uri: 'https://ctt-sis.hust.edu.vn/Content/Anh/anh_20173069.JPG'}} style={styles.userAvatar} />
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={styles.userAvatarWrapper}
+          onPress={props.gotoUserProfile}>
+          <Image
+            source={require('../assets/avatar.jpg')}
+            style={styles.userAvatar}
+          />
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.postInputWrapper}>
+          style={styles.postInputWrapper}
+          onPress={props.gotoCreatePostScreen}>
           <View style={styles.postInput}>
             <Text>Post somethings</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
 
           activeOpacity={0.5}
           style={styles.postOptionItemWrapper}>
@@ -36,16 +49,17 @@ function PostBar(props) {
               Photo
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
 }
 
-export default PostBar
+export default PostBar;
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 5,
     borderTopColor: '#ddd',
     borderTopWidth: 1,
     borderBottomColor: '#ddd',
@@ -85,7 +99,7 @@ const styles = StyleSheet.create({
   postInputWrapper: {
     borderRadius: 48,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   postInput: {
     justifyContent: 'center',

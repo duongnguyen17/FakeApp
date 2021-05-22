@@ -88,4 +88,3 @@ export const loginFailure = data => {
   };
 };
 
-export const logout = token => async dispatch => {};
