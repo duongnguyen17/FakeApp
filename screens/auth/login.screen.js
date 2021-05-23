@@ -56,8 +56,8 @@ function LoginScreen(props) {
 }
 const mapStateToProp = state => {
   return {
-    token: state.user.token,
-    error: state.user.error,
+    token: state.auth.token,
+    error: state.auth.error,
   };
 };
 const mapDispatchToProp = {

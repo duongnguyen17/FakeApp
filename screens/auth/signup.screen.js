@@ -73,7 +73,7 @@ const mapStateToProp = state => {
     // phonenumber: state.user.phonenumber,
     // password: state.user.password,
     // username: state.user.username,
-    error: state.user.error,
+    error: state.auth.error,
   };
 };
 const mapDispatchToProp = {
