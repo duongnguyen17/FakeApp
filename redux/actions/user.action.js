@@ -16,6 +16,20 @@ export const getUserInfor = (token, userId) => async dispatch => {
     console.log(error);
   }
 };
+//lấy các bài viết của người dùng
+export const getUserPost = (token, userId, index) => async dispatch => {
+  const taskURI = `${BASE_URL}/post/get_list_posts?token=${token}&index=${index}&userId=${userId}`;
+  try {
+    const res = await axios.get(taskURI);
+    if (res.data.code === apiConstantsCode.OK) {
+      dispatch(getUserPostSuccess(res.data.data));
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //thay đổi thông tin người dùng
 export const changeUserInfor = (token, data) => async dispatch => {
@@ -113,4 +127,9 @@ export const getListFollowSuccess = data => ({
 
 export const logoutSuccess = () => ({
   type: userAction.LOGOUT,
+});
+
+export const getUserPostSuccess = data => ({
+  type: userAction.GET_USER_POST,
+  payload: data,
 });

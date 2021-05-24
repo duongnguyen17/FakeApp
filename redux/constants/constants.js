@@ -19,6 +19,7 @@ export const postAction = {
 };
 export const userAction = {
   GET_USER_INFOR: 'GET_USER_INFOR',
+  GET_USER_POST: 'GET_USER_POST',
   CHANGE_INFOR: 'CHANGE_INFOR',
   LOGOUT: 'LOGOUT',
   GET_LIST_INTERESTED: 'GET_LIST_INTERESTED',

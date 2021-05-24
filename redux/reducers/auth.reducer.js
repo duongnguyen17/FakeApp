@@ -1,4 +1,4 @@
-import {authAction} from '../constants/constants';
+import {authAction, userAction} from '../constants/constants';
 const defaultState = {
   _id: '',
   phonenumber: '',
@@ -37,7 +37,7 @@ const reducer = (state = defaultState, action) => {
         phonenumber: action.payload.phonenumber,
         password: action.payload.password,
         token: action.payload.user.token,
-        username: action.payload.username,
+        username: action.payload.user.username,
         avatar: action.payload.user.avatar,
       };
       return state;
@@ -47,6 +47,15 @@ const reducer = (state = defaultState, action) => {
         phonenumber: action.payload.phonenumber,
         password: action.payload.password,
         error: action.payload.message,
+      };
+      return state;
+    case userAction.CHANGE_INFOR:
+      state = {
+        ...state,
+        phonenumber: action.payload.phonenumber,
+        password: action.payload.password,
+        username: action.payload.username,
+        avatar: action.payload.avatar,
       };
       return state;
     default:

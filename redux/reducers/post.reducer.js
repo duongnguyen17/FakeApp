@@ -17,7 +17,7 @@ const defaultState = [
     __v: 0,
   },
 ];
-const reducer = (state = defaultState, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case postAction.GET_LIST_POSTS:
       if (state.length === 1) {
