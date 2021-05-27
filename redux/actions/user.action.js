@@ -1,4 +1,4 @@
-import {userAction, BASE_URL} from '../constants/constants.js';
+import {userAction, authAction, BASE_URL} from '../constants/constants.js';
 import {apiConstantsCode} from '../constants/api.constants.js';
 import axios from 'axios';
 
@@ -39,7 +39,10 @@ export const changeUserInfor = (token, data) => async dispatch => {
   try {
     const res = await axios.post(taskURI, data); //trả về thông tin người dùng mới
     if (res.data.code === apiConstantsCode.OK) {
+      console.log(`res.data.data`, res.data.data);
       dispatch(changeUserInforSuccess(res.data.data));
+      //console.log(`res.data.data`, res.data.data);
+      dispatch(changeAuthSuccess(res.data.data));
     } else {
       throw new Error(res.data.message);
     }
@@ -133,5 +136,10 @@ export const logoutSuccess = () => ({
 
 export const getUserPostSuccess = data => ({
   type: userAction.GET_USER_POST,
+  payload: data,
+});
+
+export const changeAuthSuccess = data => ({
+  type: authAction.CHANGE_AUTH,
   payload: data,
 });

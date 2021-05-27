@@ -12,7 +12,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {StackActions} from '@react-navigation/native';
+import {StackActions, useIsFocused} from '@react-navigation/native';
 import ActionSheet from 'react-native-actions-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {logout} from '../../redux/actions/auth.action';
@@ -29,20 +29,33 @@ import AnimatedHeader from '../../components/animatedHeader.component';
 import Post from '../../components/post.component';
 
 function UserProfileScreen(props) {
-  const {auth, user, posts, post, index, route} = props;
+  const {auth, user, isOwner, posts, post, index, route} = props;
   const actionSheetRef = useRef();
   const [loading, setLoading] = useState(false);
+  const isFocused = useIsFocused();
 
+  // useEffect(() => {
+  //   if (route.params == undefined) {
+  //     props.getUserInfor(auth.token, auth._id);
+  //     props.getListPost(auth.token, index, auth._id);
+  //   } else {
+  //     props.getUserInfor(auth.token, route.params._id);
+  //     props.getListPost(auth.token, index, route.params._id);
+  //   }
+  // }, []);
   useEffect(() => {
-    if (route.params == undefined) props.getUserInfor(auth.token, auth._id);
-    else {
-      props.getUserInfor(auth.token, route.params._id);
+    if (isFocused) {
+      if (route.params == undefined) {
+        props.getUserInfor(auth.token, auth._id);
+        props.getListPost(auth.token, index, auth._id);
+      } else {
+        props.getUserInfor(auth.token, route.params._id);
+        props.getListPost(auth.token, index, route.params._id);
+      }
     }
-    getPosts(0);
-  }, []);
-
+  }, [isFocused]);
   const getPosts = async index => {
-    await props.getListPost(auth.token, index, user.userData._id);
+    await props.getListPost(auth.token, index, user._id);
   };
   const gotoUserProfile = userId => {
     props.navigation.navigate('UserProfile', {_id: userId});
@@ -64,6 +77,7 @@ function UserProfileScreen(props) {
   };
   const onRefresh = () => {
     setLoading(true);
+    props.getUserInfor(auth.token, user._id);
     getPosts(0);
     setTimeout(() => {
       setLoading(false);
@@ -87,11 +101,11 @@ function UserProfileScreen(props) {
             <Image
               style={styles.avatar}
               source={
-                user.userData.avatar == null ||
-                user.userData.avatar == undefined ||
-                user.userData.avatar == ''
+                user.avatar == null ||
+                user.avatar == undefined ||
+                user.avatar == ''
                   ? require('../../assets/avatar_null.jpg')
-                  : {uri: user.userData.avatar}
+                  : {uri: user.avatar}
               }
             />
             <View
@@ -104,35 +118,37 @@ function UserProfileScreen(props) {
               }}>
               <View style={{}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                  {user.userData.username}
+                  {user.username}
                 </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Born: </Text>
-                <Text>{user.userData.born}</Text>
+                <Text>{user.born}</Text>
               </View>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Home town: </Text>
-                <Text>{user.userData.homeTown}</Text>
+                <Text>{user.homeTown}</Text>
               </View>
               <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Address: </Text>
-                <Text style={{flex: 1}}>{user.userData.address}</Text>
+                <Text style={{flex: 1}}>{user.address}</Text>
               </View>
             </View>
           </View>
 
-          <TouchableOpacity
-            style={{position: 'absolute', right: 0, top: 0}}
-            onPress={() => {
-              actionSheetRef.current.show();
-            }}>
-            <MaterialCommunityIcons
-              name="account-settings"
-              size={20}
-              style={{marginVertical: 10, marginHorizontal: 10}}
-            />
-          </TouchableOpacity>
+          {isOwner ? (
+            <TouchableOpacity
+              style={{position: 'absolute', right: 0, top: 0}}
+              onPress={() => {
+                actionSheetRef.current.show();
+              }}>
+              <MaterialCommunityIcons
+                name="account-settings"
+                size={20}
+                style={{marginVertical: 10, marginHorizontal: 10}}
+              />
+            </TouchableOpacity>
+          ) : null}
 
           <View
             style={{
@@ -142,7 +158,7 @@ function UserProfileScreen(props) {
               borderColor: '#b3b3b3',
             }}>
             <Text style={{marginTop: 10, marginHorizontal: 10}}>
-              {user.userData.intro}
+              {user.intro}
             </Text>
           </View>
         </View>
@@ -196,7 +212,7 @@ function UserProfileScreen(props) {
           onPress={() => {
             actionSheetRef.current.hide();
             props.navigation.dispatch(StackActions.popToTop());
-            props.logout(user.userData.token);
+            props.logout(auth.token);
           }}>
           <Text style={{...styles.textOption, color: 'red'}}>Logout</Text>
         </TouchableOpacity>
@@ -212,7 +228,8 @@ const mapStateToProp = state => ({
     username: state.auth.username,
     avatar: state.auth.avatar,
   },
-  user: state.user,
+  user: state.user.userData,
+  isOwner: state.user.isOwner,
   posts: state.posts.posts,
   post: state.posts.post,
   index: state.posts.index,

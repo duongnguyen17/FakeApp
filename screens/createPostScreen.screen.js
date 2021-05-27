@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Keyboard,
+  Button,
   ToastAndroid,
 } from 'react-native';
 import {screenWidth, screenHeight} from '../constants';
@@ -69,7 +70,15 @@ const CreatePostScreen = props => {
       props.navigation.navigate('TabBar');
     }
   };
-
+  useLayoutEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <View style={{marginRight: 10}}>
+          <Button onPress={() => submit()} title="Submit" />
+        </View>
+      ),
+    });
+  }, [props.navigation, photo, described]);
   const checkContent = () => {
     const boo = described.replace(/\s/g, '').length;
     return !!boo;
@@ -137,7 +146,7 @@ const CreatePostScreen = props => {
           )}
         </View>
       </TouchableWithoutFeedback>
-      <View style={{marginBottom: 20, width: screenWidth, marginTop: 3}}>
+      {/* <View style={{marginBottom: 20, width: screenWidth, marginTop: 3}}>
         <TouchableOpacity
           style={{
             backgroundColor: '#66ccff',
@@ -153,7 +162,7 @@ const CreatePostScreen = props => {
             Submit
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

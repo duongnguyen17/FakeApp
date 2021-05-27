@@ -4,6 +4,7 @@ export const authAction = {
   SIGNUP_FAILURE: 'SIGNUP_FAILURE',
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  CHANGE_AUTH: 'CHANGE_AUTH',
 };
 
 export const postAction = {

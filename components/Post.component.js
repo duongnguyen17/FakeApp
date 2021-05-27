@@ -21,6 +21,7 @@ function Post(props) {
     getPost,
     interestedPost,
     gotoPostDetail,
+    jumToProfile,
   } = props;
   const [isClosed, setIsClosed] = useState(props.post.isClosed);
   const [isInterested, setIsInterested] = useState(() => {
@@ -41,7 +42,9 @@ function Post(props) {
         <View style={styles.customListView}>
           <TouchableOpacity
             onPress={() => {
-              gotoUserProfile(post.authorId);
+              if (user._id == post.authorId) {
+                jumToProfile();
+              } else gotoUserProfile(post.authorId);
             }}>
             <Image
               style={styles.avatar}

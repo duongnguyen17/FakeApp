@@ -14,7 +14,7 @@ function PostBar(props) {
   // onPress = {props.gotoUserProfile}
   // onPress={props.onFullPostToolPressHandler}
   // onPress={props.onPhotoUploaderPressHandler}
-  const {avatar} = props;
+  const {avatar, jumToProfile} = props;
   // useEffect(() => {
   //   console.log(`avatar`, avatar);
   // }, []);
@@ -24,7 +24,7 @@ function PostBar(props) {
         <TouchableOpacity
           activeOpacity={0.5}
           style={styles.userAvatarWrapper}
-          onPress={props.gotoUserProfile}>
+          onPress={jumToProfile}>
           <Image
             style={styles.userAvatar}
             source={

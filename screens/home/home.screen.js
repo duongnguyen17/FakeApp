@@ -10,11 +10,10 @@ import {
   Animated,
   Text,
 } from 'react-native';
-
 import AnimatedHeader from '../../components/animatedHeader.component';
 import PostBar from '../../components/postBar.components';
 import Post from '../../components/post.component';
-
+import {TabActions, useIsFocused} from '@react-navigation/native';
 import {
   getListPost,
   closePost,
@@ -24,19 +23,22 @@ import {
 import {connect} from 'react-redux';
 import {TouchableOpacity} from 'react-native';
 function HomeScreen(props) {
-
   const [loading, setLoading] = useState(false);
   // let headerHeight = useRef(new Animated.Value(0)).current;
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-    getPosts(0);
-  }, []);
+    if (isFocused) getPosts(0);
+  }, [isFocused]);
 
   const getPosts = async index => {
     await props.getListPost(props.user.token, index);
   };
   const gotoUserProfile = userId => {
     props.navigation.navigate('UserProfile', {_id: userId});
+  };
+  const jumToProfile = () => {
+    const jumpToAction = TabActions.jumpTo('ProfileTab');
+    props.navigation.dispatch(jumpToAction);
   };
   const gotoComment = postId => {
     props.navigation.navigate('Comment', {_id: postId});
@@ -96,6 +98,7 @@ function HomeScreen(props) {
           gotoUserProfile={gotoUserProfile}
           gotoCreatePostScreen={gotoCreatePostScreen}
           avatar={props.user.avatar}
+          jumToProfile={jumToProfile}
         />
 
         {props.posts.map((value, index) => (
@@ -109,6 +112,7 @@ function HomeScreen(props) {
             interestedPost={interestedPost}
             gotoPostDetail={gotoPostDetail}
             getPost={getPost}
+            jumToProfile={jumToProfile}
           />
         ))}
         <TouchableOpacity
