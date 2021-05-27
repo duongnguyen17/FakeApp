@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,64 +8,114 @@ import {
   Switch,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
+import FbGrid from 'react-native-fb-image-grid';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {screenHeight, screenWidth} from '../constants';
 function Post(props) {
-  const [isEnabled, setIsEnabled] = useState(props.post.isClosed);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const {
+    post,
+    user,
+    gotoUserProfile,
+    gotoComment,
+    closePost,
+    getPost,
+    interestedPost,
+    gotoPostDetail,
+  } = props;
+  const [isClosed, setIsClosed] = useState(props.post.isClosed);
+  const [isInterested, setIsInterested] = useState(() => {
+    let is = props.post.interestedList.includes(user._id);
+    return !!is;
+  });
+  // useEffect(() => {
+  //   console.log(`post.image`, post.image);
+  // }, []);
   return (
-    <TouchableOpacity style={styles.post}>
+    <TouchableOpacity
+      style={styles.post}
+      onPress={() => {
+        getPost(post._id);
+        gotoPostDetail(post._id);
+      }}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={styles.customListView}>
-          <TouchableOpacity onPress={props.gotoUserProfile}>
+          <TouchableOpacity
+            onPress={() => {
+              gotoUserProfile(post.authorId);
+            }}>
             <Image
               style={styles.avatar}
-              source={{uri: props.post.autorAvatar}}
+              source={
+                post.authorAvatar == null ||
+                post.authorAvatar == undefined ||
+                post.authorAvatar == ''
+                  ? require('../assets/avatar_null.jpg')
+                  : {uri: post.authorAvatar}
+              }
             />
           </TouchableOpacity>
           <View style={styles.infoWrapper}>
             <View style={styles.namesWrapper}>
-              <TouchableOpacity onPress={props.gotoUserProfile}>
+              <TouchableOpacity
+                onPress={() => {
+                  gotoUserProfile(post.authorId);
+                }}>
                 <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                  {props.post.authorName}
+                  {post.authorName}
                 </Text>
               </TouchableOpacity>
             </View>
             <View>
               <Text style={{color: 'gray', fontSize: 14}}>
-                {props.post.created}
+                {post.created.slice(0, 10)}
               </Text>
             </View>
           </View>
         </View>
-        <Switch
-          //disabled={true}
-          trackColor={{false: '#767577', true: '#cceeff'}}
-          thumbColor={isEnabled ? '#66ccff' : '#f4f3f4'}
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-          style={{right: 20}}
-        />
+        <View
+          style={{right: 20, opacity: user._id != post.authorId ? 0.25 : 1}}>
+          <Switch
+            disabled={user._id != post.authorId}
+            trackColor={{false: '#767577', true: '#cceeff'}}
+            thumbColor={!isClosed ? '#66ccff' : '#f4f3f4'}
+            onValueChange={() => {
+              setIsClosed(!isClosed);
+              closePost(post._id);
+            }}
+            value={!isClosed}
+            style={{marginVertical: 4, marginHorizontal: 4}}
+          />
+        </View>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.paragraph}>{props.post.described}</Text>
+        <Text style={styles.paragraph}>{post.described}</Text>
       </View>
-      <TouchableOpacity onPress={props.gotoUserProfile}>
-        <View style={styles.imageContainer}>
-          {/* <Image style={{height:300}} source={{uri: 'https://ctt-sis.hust.edu.vn/Content/Anh/avatar.JPG'}}/> */}
-        </View>
-      </TouchableOpacity>
+      {/* {post.image.length == 0 ? null : (
+        <TouchableOpacity onPress={() => {}}>
+          <View style={styles.imageContainer}>
+            <FbGrid images={post.image} />
+          </View>
+        </TouchableOpacity>
+      )} */}
+      {post.image.map((value, index) => (
+        <TouchableOpacity onPress={() => {}} key={index}>
+          <View style={styles.imageContainer}>
+            <Image source={{uri: value.url}} style={styles.imageContainer} />
+          </View>
+        </TouchableOpacity>
+      ))}
+
       <View horizontal={true} style={styles.reactionContainer}>
         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
           <MaterialCommunityIcons
-            name="bookmark-outline"
+            name="bookmark"
             color="#66ccff"
             backgroundColor="#fff"
             size={18}
             style={{marginLeft: 10}}
           />
           <Text style={{fontSize: 12, color: 'gray'}}>
-            {props.post.interestedNum}
+            {post.interestedNum}
           </Text>
         </TouchableOpacity>
         <View
@@ -75,10 +125,10 @@ function Post(props) {
             marginLeft: 20,
           }}>
           <Text style={{fontSize: 12, color: 'gray'}}>
-            {props.post.commentNum} comments
+            {post.commentNum} comments
           </Text>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             position: 'absolute',
             fontSize: 14,
@@ -89,20 +139,30 @@ function Post(props) {
             style={{fontSize: 12, textAlignVertical: 'center', color: 'gray'}}>
             18 Share
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={styles.commentContainer}>
-        <TouchableOpacity style={styles.likeIcon}>
+        <TouchableOpacity
+          style={styles.likeIcon}
+          onPress={() => {
+            setIsInterested(!isInterested);
+            interestedPost(post._id);
+          }}>
           <MaterialCommunityIcons
             size={26}
-            name="bookmark-outline"
+            name={isInterested ? 'bookmark' : 'bookmark-outline'}
             color="#66ccff"
+            style={{marginHorizontal: 4, marginVertical: 4}}
           />
         </TouchableOpacity>
         <View style={styles.commentInput}>
           <TouchableOpacity
             style={styles.commentInputWrapper}
-            onPress={props.gotoComment}>
+            onPress={() => {
+              //console.log(`object`);
+              getPost(post._id);
+              gotoComment(post._id);
+            }}>
             <Text>Comment...</Text>
           </TouchableOpacity>
         </View>
@@ -159,7 +219,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginTop: 5,
-    flex: 1,
+    width: 100,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
   },

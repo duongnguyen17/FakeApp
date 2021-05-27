@@ -15,30 +15,44 @@ const defaultState = {
     intro: null,
     avatar: null,
     followNum: 1,
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYwYTRjYzQ0NGI2ZWJmMzM5Y2UzY2I1ZCIsInBob25lbnVtYmVyIjoiMDk4MTIzNDU3OCJ9LCJpYXQiOjE2MjE0MTI5MzJ9.Zp9oMLLtkoMYb1xacVhxfNmfALYx8M9cDStSfzoxjpk',
-    __v: 0,
   },
-  isOwner: 1,
+  isOwner: true,
 };
-const reducer = (state, action) => {
+const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case userAction.GET_USER_INFOR:
-      return action.payload;
-    case userAction.GET_USER_POST:
-      state.posts = action.payload;
+      state = {
+        ...state,
+        ...action.payload,
+      };
       return state;
     case userAction.GET_LIST_FOLLOW:
-      state.followList = action.payload;
+      state = {
+        ...state,
+        userData: {
+          ...state.userData,
+          followList: action.payload,
+        },
+      };
       return state;
     case userAction.FOLLOW_OTHER:
-      state.followList.push(action.payload);
+      state = {
+        ...state,
+        userData: {
+          ...state.userData,
+          followList: state.userData.followList.push(action.payload),
+        },
+      };
       return state;
     case userAction.GET_LIST_INTERESTED:
-      state.interestedList = action.payload;
+      state = {
+        ...state,
+        userData: {
+          ...state.userData,
+          interestedList: action.payload,
+        },
+      };
       return state;
-    case userAction.CHANGE_INFOR:
-      return action.payload;
     default:
       return state;
   }

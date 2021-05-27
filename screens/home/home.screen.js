@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,60 +6,74 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
+  RefreshControl,
   Animated,
+  Text,
 } from 'react-native';
 
 import AnimatedHeader from '../../components/animatedHeader.component';
 import PostBar from '../../components/postBar.components';
 import Post from '../../components/post.component';
 
+import {
+  getListPost,
+  closePost,
+  getPost,
+  interestedPost,
+} from '../../redux/actions/post.action';
+import {connect} from 'react-redux';
+import {TouchableOpacity} from 'react-native';
 function HomeScreen(props) {
-  const [posts, setPosts] = useState([
-    {
-      interestedList: [],
-      commentList: [],
-      _id: '60a29f1162def138fc24f97d',
-      authorId: '608d8b95142eaa0d0060b8f3',
-      described: 'test thử23432432',
-      image: [],
-      created: '2021-05-17T16:51:29.838Z',
-      isClosed: false,
-      interestedNum: 0,
-      commentNum: 0,
-      authorName: 'test1',
-      authorAvatar:
-        'http://res.cloudinary.com/do4l7xob6/image/upload/v1619889815/v3lanly9k1kbkev9mfr3.jpg',
-      __v: 0,
-    },
-    {
-      interestedList: [],
-      commentList: [],
-      _id: '60a29f1262def138fc24f97e',
-      authorId: '608d8b95142eaa0d0060b8f3',
-      described: 'test thử23432432',
-      image: [],
-      created: '2021-05-17T16:51:30.920Z',
-      isClosed: false,
-      interestedNum: 0,
-      commentNum: 0,
-      authorName: 'test1',
-      authorAvatar:
-        'http://res.cloudinary.com/do4l7xob6/image/upload/v1619889815/v3lanly9k1kbkev9mfr3.jpg',
-      __v: 0,
-    },
-  ]);
+
+  const [loading, setLoading] = useState(false);
   // let headerHeight = useRef(new Animated.Value(0)).current;
 
-  const gotoUserProfile = id => {
-    props.navigation.navigate('UserProfile', {id: id});
+  useEffect(() => {
+    getPosts(0);
+  }, []);
+
+  const getPosts = async index => {
+    await props.getListPost(props.user.token, index);
   };
-  const gotoComment = id => {
-    props.navigation.navigate('Comment', {id: id});
+  const gotoUserProfile = userId => {
+    props.navigation.navigate('UserProfile', {_id: userId});
+  };
+  const gotoComment = postId => {
+    props.navigation.navigate('Comment', {_id: postId});
+  };
+  const gotoPostDetail = postId => {
+    props.navigation.navigate('PostDetail', {_id: postId});
   };
   const gotoCreatePostScreen = () => {
     props.navigation.navigate('CreatePostScreen');
   };
-
+  const closePost = postId => {
+    props.closePost(props.user.token, postId);
+  };
+  const getPost = async postId => {
+    await props.getPost(props.user.token, postId);
+  };
+  const interestedPost = postId => {
+    props.interestedPost(props.user.token, postId);
+  };
+  const onRefresh = () => {
+    setLoading(true);
+    getPosts(0);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+  // const morePosts = () => {
+  //   setLoading(true);
+  //   getPosts(index);
+  //   index += 20;
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 1000);
+  // };
+  const morePost = () => {
+    getPosts(props.index + 20);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <AnimatedHeader
@@ -75,26 +89,71 @@ function HomeScreen(props) {
         // onScroll={Animated.event([
         //   {nativeEvent: {contentOffset: {y: headerHeight}}},
         // ])}
-      >
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }>
         <PostBar
           gotoUserProfile={gotoUserProfile}
           gotoCreatePostScreen={gotoCreatePostScreen}
+          avatar={props.user.avatar}
         />
 
-        {posts.map((value, index) => (
+        {props.posts.map((value, index) => (
           <Post
             key={index}
+            user={props.user}
             post={value}
             gotoUserProfile={gotoUserProfile}
             gotoComment={gotoComment}
+            closePost={closePost}
+            interestedPost={interestedPost}
+            gotoPostDetail={gotoPostDetail}
+            getPost={getPost}
           />
         ))}
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginVertical: 10,
+            flex: 1,
+            backgroundColor: '#fff',
+            borderRadius: 10,
+          }}
+          onPress={() => {
+            morePost();
+          }}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 24,
+              color: '#3399ff',
+              marginVertical: 10,
+            }}>
+            More Posts
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-export default HomeScreen;
+const mapStateToProp = state => ({
+  user: {
+    _id: state.auth._id,
+    username: state.auth.username,
+    avatar: state.auth.avatar,
+    token: state.auth.token,
+  },
+  posts: state.posts.posts,
+  index: state.posts.index,
+});
+const mapDispatchToProp = {
+  getListPost,
+  closePost,
+  getPost,
+  interestedPost,
+};
+export default connect(mapStateToProp, mapDispatchToProp)(HomeScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

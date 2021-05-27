@@ -13,50 +13,40 @@ const reducer = (state = defaultState, action) => {
     case authAction.SIGNUP_SUCCESS:
       state = {
         ...state,
-        _id: action.payload.user._id,
+        _id: action.payload._id,
         phonenumber: action.payload.phonenumber,
         password: action.payload.password,
-        token: action.payload.user.token,
+        token: action.payload.token,
         username: action.payload.username,
-        avatar: action.payload.user.avatar,
+        avatar: action.payload.avatar,
       };
       return state;
     case authAction.SIGNUP_FAILURE:
       state = {
         ...state,
-        phonenumber: action.payload.phonenumber,
-        password: action.payload.password,
-        username: action.payload.username,
-        error: action.payload.message,
+        error: action.payload,
       };
       return state;
     case authAction.LOGIN_SUCCESS:
       state = {
         ...state,
-        _id: action.payload.user._id,
+        _id: action.payload._id,
         phonenumber: action.payload.phonenumber,
         password: action.payload.password,
-        token: action.payload.user.token,
-        username: action.payload.user.username,
-        avatar: action.payload.user.avatar,
+        token: action.payload.token,
+        username: action.payload.username,
+        avatar: action.payload.avatar,
+        error: '',
       };
       return state;
     case authAction.LOGIN_FAILURE:
       state = {
         ...state,
-        phonenumber: action.payload.phonenumber,
-        password: action.payload.password,
-        error: action.payload.message,
+        error: action.payload,
       };
       return state;
-    case userAction.CHANGE_INFOR:
-      state = {
-        ...state,
-        phonenumber: action.payload.phonenumber,
-        password: action.payload.password,
-        username: action.payload.username,
-        avatar: action.payload.avatar,
-      };
+    case userAction.LOGOUT:
+      state = undefined;
       return state;
     default:
       return state;

@@ -5,8 +5,10 @@ import axios from 'axios';
 //lấy thông tin người dùng
 export const getUserInfor = (token, userId) => async dispatch => {
   const taskURI = `${BASE_URL}/user/get_user_infor?token=${token}&userId=${userId}`;
+  //console.log(`taskURI`, taskURI);
   try {
     const res = await axios.get(taskURI);
+    //console.log(`res.data`, res.data);
     if (res.data.code === apiConstantsCode.OK) {
       dispatch(getUserInforSuccess(res.data.data));
     } else {

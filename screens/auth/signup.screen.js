@@ -8,20 +8,14 @@ function SignupScreen(props) {
   const [phonenumber, setPhonenumber] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  // const [error, setError] = useState('');
-  // useEffect(() => {
-  //   setPhonenumber(phonenumber);
-  //   setPassword(password);
-  //   setUsername(username);
-  //   setError(error);
-  //   return () => {};
-  // }, [error, phonenumber, password, username]);
 
+  useEffect(() => {
+    if (props.token != '') {
+      props.navigation.navigate('TabBar');
+    }
+  }, [props.token]);
   const handleSignup = () => {
     props.signup(phonenumber, password, username);
-    if (props.error == '') {
-      props.navigation.navigate('UserProfileScreen');
-    }
   };
   return (
     <View style={styles.body}>
@@ -40,7 +34,6 @@ function SignupScreen(props) {
       />
       <TextInput
         placeholder="Username"
-        secureTextEntry={true}
         onChangeText={name => {
           setUsername(name);
         }}
@@ -73,6 +66,7 @@ const mapStateToProp = state => {
     // phonenumber: state.user.phonenumber,
     // password: state.user.password,
     // username: state.user.username,
+    token: state.auth.token,
     error: state.auth.error,
   };
 };

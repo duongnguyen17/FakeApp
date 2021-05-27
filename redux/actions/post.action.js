@@ -4,15 +4,25 @@ import axios from 'axios';
 
 //lấy danh sách bài viết
 export const getListPost = (token, index, userId) => async dispatch => {
-  const taskURI = `${BASE_URL}/post/get_list_posts?token=${token}&index=${index}&userId=${userId}`;
+  let taskURI = '';
+  if (userId == undefined)
+    taskURI = `${BASE_URL}/post/get_list_posts?token=${token}&index=${index}`;
+  else
+    taskURI = `${BASE_URL}/post/get_list_posts?token=${token}&index=${index}&userId=${userId}`;
+  //console.log(`taskURI`, taskURI);
   try {
-    let data = [];
     const res = await axios.get(taskURI);
+    //console.log(`res.data`, res.data);
     //nếu lấy về thành công
     if (res.data.code === apiConstantsCode.OK) {
-      data = res.data.data.posts;
+      let data = {
+        posts: res.data.data,
+        index: index,
+      };
+      dispatch(fetchPostsSuccess(data));
+    } else {
+      throw Error(res.data.message);
     }
-    dispatch(fetchPostsSuccess(data));
   } catch (error) {
     console.log(error);
   }
@@ -20,14 +30,15 @@ export const getListPost = (token, index, userId) => async dispatch => {
 
 //đăng bài
 export const addPost = (token, data) => async dispatch => {
-  const taskURI = `${BASE_URL}/post/get_list_posts?token=${token}`;
+  const taskURI = `${BASE_URL}/post/add_post?token=${token}`;
   try {
     let res = await axios.post(taskURI, data); //nhận về data của bài viết vừa đăng
-    let data = {};
+    let result = {};
+    //console.log(`res.data`, res.data);
     if (res.data.code === apiConstantsCode.OK) {
-      data = res.data.data;
+      result = res.data.data;
     }
-    dispatch(addPostSuccess(data));
+    dispatch(addPostSuccess(result));
   } catch (error) {
     console.log(error);
   }
@@ -35,13 +46,15 @@ export const addPost = (token, data) => async dispatch => {
 //lấy thông tin bài viết
 export const getPost = (token, postId) => async dispatch => {
   const taskURI = `${BASE_URL}/post/get_post?token=${token}&postId=${postId}`;
+  //console.log(`taskURI`, taskURI);
   try {
     const res = await axios.get(taskURI);
-    let data = {};
     if (res.data.code === apiConstantsCode.OK) {
-      data = res.data.data;
+      //console.log(`res.data.data`, res.data.data);
+      dispatch(getPostSuccess(res.data.data));
+    } else {
+      throw Error(res.data.message);
     }
-    dispatch(getPostSuccess(data));
   } catch (error) {
     console.log(error);
   }
@@ -52,6 +65,7 @@ export const closePost = (token, postId) => async dispatch => {
   const taskURI = `${BASE_URL}/post/close_post?token=${token}&postId=${postId}`;
   try {
     const res = await axios.post(taskURI);
+
     let data = {};
     if (res.data.code === apiConstantsCode.OK) {
       data = res.data.data;
@@ -80,6 +94,7 @@ export const interestedPost = (token, postId) => async dispatch => {
 //xóa bài viết
 export const deletePost = (token, postId) => async dispatch => {
   const taskURI = `${BASE_URL}/post/delete_post?token=${token}&postId=${postId}`;
+
   try {
     const res = await axios.post(taskURI); //nếu xóa thành công thì trả lại id bài viết
     if (res.data.code === apiConstantsCode.OK) {
@@ -96,10 +111,16 @@ export const deletePost = (token, postId) => async dispatch => {
 //comment post
 export const commentPost = (token, postId, data) => async dispatch => {
   const taskURI = `${BASE_URL}/post/comment_post?token=${token}&postId=${postId}`;
+  //console.log(`taskURI`, taskURI);
   try {
+    //console.log(`data`, data);
     const res = await axios.post(taskURI, data); //trả về data của comment đó
+    //console.log(`res.data`, res.data);
     if (res.data.code === apiConstantsCode.OK) {
-      let data = res.data.data;
+      let data = {
+        postId: postId,
+        ...res.data.data,
+      };
       dispatch(commentPostSuccess(data));
     } else {
       throw new Error(res.data.message);
@@ -117,6 +138,24 @@ export const deleteComment = (token, commentId) => async dispatch => {
     if (res.data.code === apiConstantsCode.OK) {
       let data = res.data.data; // id của comment đã được xóa
       dispatch(deleteCommentSuccess(data));
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+//lấy danh sách comment của bài viết
+export const getListComment = (token, postId) => async dispatch => {
+  const taskURI = `${BASE_URL}/post/get_list_comments?token=${token}&postId=${postId}`;
+  try {
+    const res = await axios.get(taskURI);
+    if (res.data.code === apiConstantsCode.OK) {
+      let data = {
+        _id: postId,
+        commentList: res.data.data,
+      };
+      dispatch(getListCommentSuccess(data));
     } else {
       throw new Error(res.data.message);
     }
@@ -184,4 +223,9 @@ export const deleteCommentSuccess = data => ({
 export const getListInterestedSuccess = data => ({
   type: postAction.GET_LIST_INTERESTED,
   payload: data, //danh sách các user đã quan tâm bài viết
+});
+
+export const getListCommentSuccess = data => ({
+  type: postAction.GET_LIST_COMMENTS,
+  payload: data,
 });

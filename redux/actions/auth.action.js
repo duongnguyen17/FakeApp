@@ -1,4 +1,4 @@
-import {authAction, BASE_URL} from '../constants/constants.js';
+import {authAction, BASE_URL, userAction} from '../constants/constants.js';
 import {apiConstantsCode} from '../constants/api.constants.js';
 import axios from 'axios';
 
@@ -11,22 +11,14 @@ export const signup = (phonenumber, password, username) => async dispatch => {
     if (res.data.code === apiConstantsCode.OK) {
       data = {
         ...data,
-        user: res.data.data,
+        ...res.data.data,
       };
       dispatch(signupSuccess(data));
     } else {
-      data = {
-        ...data,
-        message: res.data.message,
-      };
-      dispatch(signupFailure(data));
+      dispatch(signupFailure(res.data.message));
     }
   } catch (error) {
-    data = {
-      ...data,
-      message: error,
-    };
-    dispatch(signupFailure(data));
+    dispatch(signupFailure(error.message));
   }
 };
 
@@ -40,26 +32,33 @@ export const login = (phonenumber, password) => async dispatch => {
     if (res.data.code === apiConstantsCode.OK) {
       data = {
         ...data,
-        user: res.data.data,
+        ...res.data.data,
       };
       dispatch(loginSuccess(data));
     } else {
-      data = {
-        ...data,
-        message: res.data.message,
-      };
-      dispatch(loginFailure(data));
+      dispatch(loginFailure(res.data.message));
     }
   } catch (error) {
-    data = {
-      ...data,
-      message: error,
-    };
-    dispatch(loginFailure(data));
+    dispatch(loginFailure(error.message));
   }
-  console.log(data);
 };
 
+export const logout = token => async dispatch => {
+  const taskURI = `${BASE_URL}/user/logout?token=${token}`;
+  try {
+    const res = await axios.post(taskURI);
+    if (res.data.code === apiConstantsCode.OK) {
+      dispatch(logoutSuccess());
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+export const logoutSuccess = () => ({
+  type: userAction.LOGOUT,
+});
 export const signupSuccess = data => {
   return {
     type: authAction.SIGNUP_SUCCESS,
@@ -87,4 +86,3 @@ export const loginFailure = data => {
     payload: data,
   };
 };
-

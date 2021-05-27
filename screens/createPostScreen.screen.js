@@ -13,48 +13,66 @@ import {
 import {screenWidth, screenHeight} from '../constants';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {TouchableWithoutFeedback} from 'react-native';
-
+import {connect} from 'react-redux';
+import {addPost} from '../redux/actions/post.action';
 //hàm tạo form data
-const createFormData = (photo, body = {}) => {
+export const createFormData = (photo, body = {}) => {
   const data = new FormData();
-  data.append('photo', {
-    name: photo.fileName,
-    type: photo.type,
-    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-  });
-
+  if (photo != null) {
+    data.append('image', {
+      name: photo.fileName,
+      type: photo.type,
+      uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+    });
+  }
   Object.keys(body).forEach(key => {
     data.append(key, body[key]);
   });
-
+  // const data = {};
+  // if (photo != null) {
+  //   data.image = {
+  //     name: photo.fileName,
+  //     type: photo.type,
+  //     uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+  //   };
+  // }
+  // Object.keys(body).forEach(key => {
+  //   data[key] = body[key];
+  // });
+  //console.log(`data`, data);
   return data;
 };
 
-const CreatePostScreen = () => {
+const CreatePostScreen = props => {
+  const {user} = props;
   const input = useRef();
   const [photo, setPhoto] = useState(null);
   const [tag, setTag] = useState(null);
-  const [content, setContent] = useState('');
-
+  const [described, setDescribed] = useState('');
   const choosedPhoto = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response) {
+        //console.log(`response`, response);
         setPhoto(response);
       }
     });
   };
 
   const submit = () => {
-    if (photo == null && checkContent) {
+    const check = checkContent();
+    if (photo == null && !check) {
       ToastAndroid.show('bai viet khong co noi dung', ToastAndroid.SHORT);
     } else {
-      const data = createFormData(photo, {tag: tag, content: content});
+      const data = createFormData(photo, {described: described});
       // gọi đến dispatch
+      props.addPost(user.token, data);
+      props.navigation.navigate('TabBar');
     }
   };
 
   const checkContent = () => {
-    return content.replace(/\s/g, '').length;
+    const boo = described.replace(/\s/g, '').length;
+    return !!boo;
   };
   return (
     <View style={styles.container}>
@@ -77,10 +95,16 @@ const CreatePostScreen = () => {
                 marginLeft: 10,
                 marginTop: 10,
               }}
-              source={require('../assets/avatar.jpg')}
+              source={
+                user.avatar == null ||
+                user.avatar == undefined ||
+                user.avatar == ''
+                  ? require('../assets/avatar_null.jpg')
+                  : {uri: user.avatar}
+              }
             />
             <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 20}}>
-              Duong Nguyen
+              {user.username}
             </Text>
           </View>
           <View style={{marginTop: 10}}>
@@ -99,7 +123,18 @@ const CreatePostScreen = () => {
             onEndEditing={() => {
               Keyboard.dismiss();
             }}
+            onChangeText={text => {
+              setDescribed(text);
+            }}
           />
+          {photo == null ? null : (
+            <View>
+              <Image
+                style={{width: 200, height: 300}}
+                source={{uri: photo.uri}}
+              />
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
       <View style={{marginBottom: 20, width: screenWidth, marginTop: 3}}>
@@ -123,7 +158,18 @@ const CreatePostScreen = () => {
   );
 };
 
-export default CreatePostScreen;
+const mapStateToProp = state => ({
+  user: {
+    _id: state.auth._id,
+    username: state.auth.username,
+    avatar: state.auth.avatar,
+    token: state.auth.token,
+  },
+});
+const mapDispatchToProp = {
+  addPost,
+};
+export default connect(mapStateToProp, mapDispatchToProp)(CreatePostScreen);
 
 const styles = StyleSheet.create({
   container: {

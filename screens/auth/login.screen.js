@@ -1,19 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, Button, StyleSheet, Keyboard} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import {login} from '../../redux/actions/auth.action';
 
 function LoginScreen(props) {
   const [phonenumber, setPhonenumber] = useState('');
   const [password, setPassword] = useState('');
-  const handleLogin = () => {
-    //console.log(phonenumber, password);
-    props.login(phonenumber, password);
-    console.log(props.token);
-    if (props.token != '' && props.error == '') {
-      props.navigation.navigate('UserProfileScreen');
+  // useEffect(() => {
+  //   if (phonenumber != '' && password != '') {
+  //     handleLogin();
+  //   }
+  // }, []);
+  useEffect(() => {
+    if (props.token != '') {
+      props.navigation.navigate('TabBar');
     }
+  }, [props.token]);
+  const handleLogin = async () => {
+    await props.login(phonenumber, password);
   };
   return (
     <View style={styles.body}>
@@ -37,6 +42,7 @@ function LoginScreen(props) {
         uppercase={false}
         title="login"
         onPress={() => {
+          Keyboard.dismiss();
           handleLogin(phonenumber, password);
         }}
       />

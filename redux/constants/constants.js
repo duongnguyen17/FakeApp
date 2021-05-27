@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.1.7:3000/fakeapp';
+export const BASE_URL = 'http://192.168.1.2:3000/fakeapp';
 export const authAction = {
   SIGNUP_SUCCESS: 'SIGNUP_SUCCESS',
   SIGNUP_FAILURE: 'SIGNUP_FAILURE',
@@ -16,6 +16,7 @@ export const postAction = {
   INTERESTED_POST: 'LIKE_POST',
   COMMENT_POST: 'COMMENT_POST',
   GET_LIST_INTERESTED: 'GET_LIST_INTERESTED',
+  GET_LIST_COMMENTS: 'GET_LIST_COMMENTS',
 };
 export const userAction = {
   GET_USER_INFOR: 'GET_USER_INFOR',

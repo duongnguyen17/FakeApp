@@ -8,8 +8,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {Provider} from 'react-redux';
 import Store from './redux/store/store';
 
-// import LoginScreen from './screens/auth/login.screen';
-// import SignupScreen from './screens/auth/signup.screen';
+import LoginScreen from './screens/auth/login.screen';
+import SignupScreen from './screens/auth/signup.screen';
 import HomeScreen from './screens/home/home.screen';
 import UserProfileScreen from './screens/userProfile/userProfile.screen';
 import NotificationScreen from './screens/notifications/notification.screen';
@@ -99,7 +99,35 @@ const App = () => {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-        <MainStack.Navigator>
+        <MainStack.Navigator initialRouteName="LoginScreen">
+          <MainStack.Screen
+            name="LoginScreen"
+            component={LoginScreen}
+            options={{
+              title: 'Login',
+              headerStyle: {
+                backgroundColor: '#1a73e8',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }}
+          />
+          <MainStack.Screen
+            name="SignupScreen"
+            component={SignupScreen}
+            options={{
+              title: 'Signup',
+              headerStyle: {
+                backgroundColor: '#1a73e8',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }}
+          />
           <MainStack.Screen
             name="TabBar"
             component={TabBar}
@@ -123,34 +151,3 @@ const App = () => {
 };
 
 export default App;
-
-{
-  /* <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{
-              title: 'Login',
-              headerStyle: {
-                backgroundColor: '#1a73e8',
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-            }}
-          />
-          <Stack.Screen
-            name="SignupScreen"
-            component={SignupScreen}
-            options={{
-              title: 'Signup',
-              headerStyle: {
-                backgroundColor: '#1a73e8',
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-            }}
-          /> */
-}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {
   View,
@@ -14,6 +14,10 @@ function PostBar(props) {
   // onPress = {props.gotoUserProfile}
   // onPress={props.onFullPostToolPressHandler}
   // onPress={props.onPhotoUploaderPressHandler}
+  const {avatar} = props;
+  // useEffect(() => {
+  //   console.log(`avatar`, avatar);
+  // }, []);
   return (
     <View style={styles.container}>
       <View style={styles.postToolWrapper}>
@@ -22,8 +26,12 @@ function PostBar(props) {
           style={styles.userAvatarWrapper}
           onPress={props.gotoUserProfile}>
           <Image
-            source={require('../assets/avatar.jpg')}
             style={styles.userAvatar}
+            source={
+              avatar == null || avatar == undefined || avatar == ''
+                ? require('../assets/avatar_null.jpg')
+                : {uri: avatar}
+            }
           />
         </TouchableOpacity>
         <TouchableOpacity
