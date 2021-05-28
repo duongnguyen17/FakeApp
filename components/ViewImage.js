@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, Image, Dimensions, StyleSheet, Text} from 'react-native';
-const SCREEN_WIDTH = Dimensions.get('screen').width;
+import {View, Image, StyleSheet, Text} from 'react-native';
 
-export const OneImage = ({images, imgWidth, imgHeight}) => {
+export const OneImage = ({images, imgWidth, imgHeight, maxWidth}) => {
   return (
     <View style={styles.container}>
       <Image
@@ -12,7 +11,7 @@ export const OneImage = ({images, imgWidth, imgHeight}) => {
     </View>
   );
 };
-export const TwoImages = ({images, imgWidth, imgHeight}) => {
+export const TwoImages = ({images, imgWidth, imgHeight, maxWidth}) => {
   return (
     <View
       style={[
@@ -30,7 +29,7 @@ export const TwoImages = ({images, imgWidth, imgHeight}) => {
     </View>
   );
 };
-export const ThreeImages = ({images, imgWidth, imgHeight}) => {
+export const ThreeImages = ({images, imgWidth, imgHeight, maxWidth}) => {
   return (
     <View
       style={[
@@ -44,7 +43,7 @@ export const ThreeImages = ({images, imgWidth, imgHeight}) => {
       <View
         style={{
           flexDirection: 'column',
-          height: SCREEN_WIDTH,
+          height: maxWidth,
           justifyContent: 'space-between',
         }}>
         <Image
@@ -59,7 +58,7 @@ export const ThreeImages = ({images, imgWidth, imgHeight}) => {
     </View>
   );
 };
-export const MoreImages = ({images, imgWidth, imgHeight}) => {
+export const MoreImages = ({images, imgWidth, imgHeight, maxWidth}) => {
   return (
     <View
       style={[
@@ -73,7 +72,7 @@ export const MoreImages = ({images, imgWidth, imgHeight}) => {
       <View
         style={{
           flexDirection: 'column',
-          height: SCREEN_WIDTH,
+          height: maxWidth,
           justifyContent: 'space-between',
         }}>
         <Image
@@ -106,4 +105,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-

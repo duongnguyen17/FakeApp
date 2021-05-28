@@ -1,5 +1,9 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import ImageGrid from './ImageGrid';
+import {screenHeight, screenWidth} from '../constants';
+const maxHeight = 350;
+const maxWidth = Math.floor(screenWidth / 2);
 function Comment(props) {
   const {comment} = props;
   // useEffect(() => {
@@ -25,23 +29,43 @@ function Comment(props) {
           }
         />
       </TouchableOpacity>
-      <View style={styles.comment}>
-        <TouchableOpacity>
-          <Text style={{fontWeight: '700', fontSize: 18}}>
-            {comment.authorName}
-          </Text>
-        </TouchableOpacity>
-        {comment.image.map((value, index) => (
+      <View style={{flexDirection: 'column', flex: 1}}>
+        <View style={styles.comment}>
+          <View style={{marginHorizontal: 10, marginTop: 5}}>
+            <TouchableOpacity>
+              <Text style={{fontWeight: '700', fontSize: 18}}>
+                {comment.authorName}
+              </Text>
+            </TouchableOpacity>
+            {/* {comment.image.map((value, index) => (
           <TouchableOpacity onPress={() => {}} key={index}>
             <View style={styles.imageContainer}>
               <Image source={{uri: value.url}} style={styles.imageContainer} />
             </View>
           </TouchableOpacity>
-        ))}
-        <Text style={{fontWeight: '500', fontSize: 17, flexShrink: 1}}>
-          {comment.described}
-        </Text>
-        <Text style={{fontWeight: '200', fontSize: 13, color: 'gray'}}>
+        ))} */}
+            {comment.described != '' ? (
+              <Text style={{fontWeight: '500', fontSize: 17, flexShrink: 1}}>
+                {comment.described}
+              </Text>
+            ) : null}
+            <View style={{marginVertical: 10}}>
+              <ImageGrid
+                images={comment.image}
+                maxWidth={maxWidth}
+                maxHeight={maxHeight}
+              />
+            </View>
+          </View>
+        </View>
+        <Text
+          style={{
+            fontWeight: '200',
+            fontSize: 13,
+            color: 'gray',
+            marginLeft: 10,
+            marginTop: 5,
+          }}>
           {comment.created.slice(0, 10)}
         </Text>
       </View>
@@ -63,6 +87,9 @@ const styles = StyleSheet.create({
   },
   comment: {
     flex: 1,
+    marginLeft: 5,
+    backgroundColor: '#e6e6e6',
+    borderRadius: 10,
   },
   imageContainer: {
     marginTop: 5,

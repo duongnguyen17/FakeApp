@@ -143,7 +143,11 @@ const App = () => {
             name="CreatePostScreen"
             component={CreatePostScreen}
           />
-          <MainStack.Screen name="PostDetail" component={PostDetail} />
+          <MainStack.Screen
+            name="PostDetail"
+            component={PostDetail}
+            options={{headerShown: false}}
+          />
         </MainStack.Navigator>
       </NavigationContainer>
     </Provider>

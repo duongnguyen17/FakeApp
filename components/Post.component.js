@@ -6,11 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Switch,
+  Dimensions,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImageGrid from './ImageGrid.js';
 import {screenHeight, screenWidth} from '../constants';
+const maxHeight = 450;
 function Post(props) {
   const {
     post,
@@ -106,7 +108,11 @@ function Post(props) {
           </View>
         </TouchableOpacity>
       ))} */}
-      <ImageGrid images={post.image} />
+      <ImageGrid
+        images={post.image}
+        maxWidth={screenWidth}
+        maxHeight={maxHeight}
+      />
       <View horizontal={true} style={styles.reactionContainer}>
         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
           <MaterialCommunityIcons
@@ -254,7 +260,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 10,
     marginRight: 10,
-    height: 30,
+    height: 38,
     width: screenWidth - 100,
   },
   btnSendComment: {

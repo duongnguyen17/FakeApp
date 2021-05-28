@@ -22,9 +22,9 @@ import {
 } from '../redux/actions/post.action';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {createFormData} from './createPostScreen.screen';
-import {TouchableOpacity} from 'react-native';
+
 function CommentScreen(props) {
-  const {user, post} = props;
+  const {auth, post} = props;
   const [photo, setPhoto] = useState(null);
   const [described, setDescribed] = useState('');
   // useEffect(() => {
@@ -45,7 +45,7 @@ function CommentScreen(props) {
     } else {
       const data = createFormData(photo, {described: described});
       // gọi đến dispatch
-      props.commentPost(user.token, post._id, data);
+      props.commentPost(auth.token, post._id, data);
       props.navigation.dispatch(StackActions.replace('Comment'));
     }
   };
@@ -63,7 +63,7 @@ function CommentScreen(props) {
       <View style={styles.inputComment}>
         <View
           style={{
-            backgroundColor: '#f2f2f2',
+            backgroundColor: '#e6e6e6',
             height: 45,
             width: screenWidth - 30,
             borderRadius: 20,
@@ -117,7 +117,7 @@ function CommentScreen(props) {
   );
 }
 const mapStateToProp = state => ({
-  user: {
+  auth: {
     _id: state.auth._id,
     username: state.auth.username,
     avatar: state.auth.avatar,
@@ -137,15 +137,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    backgroundColor: '#f2f2f2',
   },
   scrollView: {
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     marginBottom: 2,
     marginTop: 2,
   },
   inputComment: {
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
   },
 });
