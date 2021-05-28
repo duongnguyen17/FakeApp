@@ -1,4 +1,4 @@
-import {postAction} from '../constants/constants';
+import {postAction, userAction} from '../constants/constants';
 const defaultState = {
   posts: [
     {
@@ -47,7 +47,7 @@ const reducer = (state = defaultState, action) => {
             : state.posts.concat(action.payload.posts),
         index: action.payload.index,
       };
-      console.log(`GET_LIST_POSTS`, state);
+      //console.log(`GET_LIST_POSTS`, state);
       return state;
 
     case postAction.ADD_POST:
@@ -162,6 +162,47 @@ const reducer = (state = defaultState, action) => {
         }
         return element;
       });
+      return state;
+    case userAction.LOGOUT:
+      state = {
+        ...state,
+
+        posts: [
+          {
+            interestedList: [],
+            commentList: [],
+            tag: [],
+            _id: '',
+            authorId: '',
+            described: '',
+            image: [],
+            created: '',
+            isClosed: false,
+            interestedNum: 0,
+            commentNum: 0,
+            authorName: '',
+            authorAvatar: '',
+            __v: 0,
+          },
+        ],
+        post: {
+          interestedList: [],
+          commentList: [],
+          tag: [],
+          _id: '',
+          authorId: '',
+          described: '',
+          image: [],
+          created: '',
+          isClosed: false,
+          interestedNum: 0,
+          commentNum: 0,
+          authorName: '',
+          authorAvatar: '',
+          __v: 0,
+        },
+        index: 0,
+      };
       return state;
     default:
       return state;

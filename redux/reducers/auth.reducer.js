@@ -46,7 +46,17 @@ const reducer = (state = defaultState, action) => {
       };
       return state;
     case userAction.LOGOUT:
-      return undefined;
+      state = {
+        ...state,
+        _id: '',
+        phonenumber: '',
+        password: '',
+        token: '',
+        username: '',
+        avatar: '',
+        error: '',
+      };
+      return state;
     case authAction.CHANGE_AUTH:
       console.log(`object`, action.payload);
       state = {

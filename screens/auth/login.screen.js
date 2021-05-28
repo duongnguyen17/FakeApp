@@ -27,6 +27,7 @@ function LoginScreen(props) {
         onChangeText={phone => {
           setPhonenumber(phone);
         }}
+        keyboardType={'number-pad'}
       />
 
       <TextInput

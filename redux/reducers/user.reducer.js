@@ -53,6 +53,27 @@ const reducer = (state = defaultState, action) => {
         },
       };
       return state;
+    case userAction.LOGOUT:
+      state = {
+        ...state,
+        userData: {
+          posts: [],
+          interestedList: [],
+          followList: [],
+          _id: '60a4cc444b6ebf339ce3cb5d',
+          phonenumber: '0981234578',
+          password: '011125e20ebe43728d3a535071a8ebe1',
+          username: 'Đức Bằng',
+          born: null,
+          homeTown: null,
+          address: null,
+          intro: null,
+          avatar: null,
+          followNum: 1,
+        },
+        isOwner: true,
+      };
+      return state;
     default:
       return state;
   }

@@ -24,6 +24,7 @@ function SignupScreen(props) {
         onChangeText={phone => {
           setPhonenumber(phone);
         }}
+        keyboardType={'number-pad'}
       />
       <TextInput
         placeholder="Password"

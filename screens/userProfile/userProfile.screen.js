@@ -33,16 +33,6 @@ function UserProfileScreen(props) {
   const actionSheetRef = useRef();
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
-
-  // useEffect(() => {
-  //   if (route.params == undefined) {
-  //     props.getUserInfor(auth.token, auth._id);
-  //     props.getListPost(auth.token, index, auth._id);
-  //   } else {
-  //     props.getUserInfor(auth.token, route.params._id);
-  //     props.getListPost(auth.token, index, route.params._id);
-  //   }
-  // }, []);
   useEffect(() => {
     if (isFocused) {
       if (route.params == undefined) {
