@@ -7,11 +7,13 @@ import {
   ToastAndroid,
   Keyboard,
   TextInput,
+  Image,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {screenWidth} from '../constants';
 import {connect} from 'react-redux';
 import Comment from '../components/commentTag.component';
+import {StackActions} from '@react-navigation/native';
 import {
   getPost,
   getListComment,
@@ -44,6 +46,7 @@ function CommentScreen(props) {
       const data = createFormData(photo, {described: described});
       // gọi đến dispatch
       props.commentPost(user.token, post._id, data);
+      props.navigation.dispatch(StackActions.replace('Comment'));
     }
   };
   const checkContent = () => {
@@ -101,6 +104,14 @@ function CommentScreen(props) {
             />
           </View>
         </View>
+        {photo == null ? null : (
+          <View style={{marginVertical: 5}}>
+            <Image
+              style={{width: 200, height: 300}}
+              source={{uri: photo.uri}}
+            />
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -133,7 +144,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   inputComment: {
-    height: 60,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',

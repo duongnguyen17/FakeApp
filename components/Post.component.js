@@ -8,8 +8,8 @@ import {
   Switch,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
-import FbGrid from 'react-native-fb-image-grid';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImageGrid from './ImageGrid.js';
 import {screenHeight, screenWidth} from '../constants';
 function Post(props) {
   const {
@@ -34,6 +34,7 @@ function Post(props) {
   return (
     <TouchableOpacity
       style={styles.post}
+      activeOpacity={0.8}
       onPress={() => {
         getPost(post._id);
         gotoPostDetail(post._id);
@@ -63,7 +64,7 @@ function Post(props) {
                 onPress={() => {
                   gotoUserProfile(post.authorId);
                 }}>
-                <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                   {post.authorName}
                 </Text>
               </TouchableOpacity>
@@ -90,24 +91,20 @@ function Post(props) {
           />
         </View>
       </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.paragraph}>{post.described}</Text>
-      </View>
-      {/* {post.image.length == 0 ? null : (
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.imageContainer}>
-            <FbGrid images={post.image} />
-          </View>
-        </TouchableOpacity>
-      )} */}
-      {post.image.map((value, index) => (
+      {post.described != '' ? (
+        <View style={styles.contentContainer}>
+          <Text style={styles.paragraph}>{post.described}</Text>
+        </View>
+      ) : null}
+
+      {/* {post.image.map((value, index) => (
         <TouchableOpacity onPress={() => {}} key={index}>
           <View style={styles.imageContainer}>
             <Image source={{uri: value.url}} style={styles.imageContainer} />
           </View>
         </TouchableOpacity>
-      ))}
-
+      ))} */}
+      <ImageGrid images={post.image} />
       <View horizontal={true} style={styles.reactionContainer}>
         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
           <MaterialCommunityIcons
@@ -216,9 +213,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 15,
   },
-  paragraph: {},
+  paragraph: {
+    fontSize: 16,
+    flexShrink: 1,
+  },
   contentContainer: {
-    paddingHorizontal: 15,
+    marginHorizontal: 15,
+    marginVertical: 15,
   },
   imageContainer: {
     marginTop: 5,

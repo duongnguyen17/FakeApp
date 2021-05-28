@@ -163,7 +163,5 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  listContainter: {
-    marginHorizontal: 5,
-  },
+  listContainter: {},
 });

@@ -38,11 +38,11 @@ function Comment(props) {
             </View>
           </TouchableOpacity>
         ))}
-        <Text style={{fontWeight: '500', fontSize: 17}}>
-          {comment.described.slice(0, 10)}
+        <Text style={{fontWeight: '500', fontSize: 17, flexShrink: 1}}>
+          {comment.described}
         </Text>
         <Text style={{fontWeight: '200', fontSize: 13, color: 'gray'}}>
-          {comment.created}
+          {comment.created.slice(0, 10)}
         </Text>
       </View>
     </View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   comment: {
-    marginHorizontal: 5,
+    flex: 1,
   },
   imageContainer: {
     marginTop: 5,
