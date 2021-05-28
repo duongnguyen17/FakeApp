@@ -29,17 +29,27 @@ const ImageGrid = ({images}) => {
         break;
       case 2:
         setImgWidth(Math.floor(SCREEN_WIDTH / 2 - 1));
-        Image.getSize(images[0].url, (width, height) => {
-          setImgHeight(height);
-        });
-        Image.getSize(images[1].url, (width, height) => {
-          if (imgHeight > height) setImgHeight(height);
+        Image.getSize(images[0].url, (width1, height1) => {
+          Image.getSize(images[1].url, (width2, height2) => {
+            if (height1 < height2) {
+              // console.log(`height2`, height2);
+              if (height2 > MAX_HEIGHT) setImgHeight(MAX_HEIGHT);
+              else {
+                setImgHeight(height2);
+              }
+            } else {
+              // console.log(`height1`, height1);
+              if (height1 > MAX_HEIGHT) setImgHeight(MAX_HEIGHT);
+              else {
+                setImgHeight(height1);
+              }
+            }
+          });
         });
         break;
       case 3:
         setImgWidth(Math.floor(SCREEN_WIDTH / 2 - 1));
         setImgHeight(SCREEN_WIDTH);
-
         break;
       default:
         setImgWidth(Math.floor(SCREEN_WIDTH / 2 - 1));

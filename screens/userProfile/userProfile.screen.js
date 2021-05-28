@@ -91,7 +91,7 @@ function UserProfileScreen(props) {
     <SafeAreaView>
       {/* <AnimatedHeader animatedValue={offset} name={'Profile'} size={23} /> */}
       <ScrollView
-        style={{marginHorizontal: 5, marginVertical: 10}}
+        style={{marginVertical: 10}}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }>

@@ -65,12 +65,11 @@ export const closePost = (token, postId) => async dispatch => {
   const taskURI = `${BASE_URL}/post/close_post?token=${token}&postId=${postId}`;
   try {
     const res = await axios.post(taskURI);
-
-    let data = {};
     if (res.data.code === apiConstantsCode.OK) {
-      data = res.data.data;
+      dispatch(closePostSuccess(res.data.data));
+    } else {
+      throw Error(res.data.message);
     }
-    dispatch(closePostSuccess(data));
   } catch (error) {
     console.log(error);
   }

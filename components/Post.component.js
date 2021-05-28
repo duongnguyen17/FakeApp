@@ -23,11 +23,14 @@ function Post(props) {
     gotoPostDetail,
     jumToProfile,
   } = props;
-  const [isClosed, setIsClosed] = useState(props.post.isClosed);
-  const [isInterested, setIsInterested] = useState(() => {
-    let is = props.post.interestedList.includes(user._id);
-    return !!is;
-  });
+  const [isInterested, setIsInterested] = useState(null);
+
+  useEffect(() => {
+    setIsInterested(() => {
+      let is = post.interestedList.includes(user._id);
+      return !!is;
+    });
+  }, [post.interestedList]);
   // useEffect(() => {
   //   console.log(`post.image`, post.image);
   // }, []);
@@ -81,12 +84,11 @@ function Post(props) {
           <Switch
             disabled={user._id != post.authorId}
             trackColor={{false: '#767577', true: '#cceeff'}}
-            thumbColor={!isClosed ? '#66ccff' : '#f4f3f4'}
+            thumbColor={!post.isClosed ? '#66ccff' : '#f4f3f4'}
             onValueChange={() => {
-              setIsClosed(!isClosed);
               closePost(post._id);
             }}
-            value={!isClosed}
+            value={!post.isClosed}
             style={{marginVertical: 4, marginHorizontal: 4}}
           />
         </View>

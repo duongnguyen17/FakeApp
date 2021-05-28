@@ -47,6 +47,7 @@ const reducer = (state = defaultState, action) => {
             : state.posts.concat(action.payload.posts),
         index: action.payload.index,
       };
+      console.log(`GET_LIST_POSTS`, state);
       return state;
 
     case postAction.ADD_POST:
@@ -71,12 +72,39 @@ const reducer = (state = defaultState, action) => {
       return state;
 
     case postAction.CLOSE_POST:
-      state.posts = state.posts.map(element => {
-        if (element._id == action.payload._id) {
-          element.isClosed = action.payload.isClosed;
-        }
-        return element;
-      });
+      // let newPosts = state.posts.map(element => {
+      //   if (element._id == action.payload._id) {
+      //     element.isClosed = action.payload.isClosed;
+      //   }
+      //   return element;
+      // });
+      if (state.post._id == action.payload._id) {
+        state = {
+          ...state,
+          posts: state.posts.map(element => {
+            if (element._id == action.payload._id) {
+              element.isClosed = action.payload.isClosed;
+            }
+            return element;
+          }),
+          post: {
+            ...state.post,
+            isClosed: action.payload.isClosed,
+          },
+        };
+      } else {
+        state = {
+          ...state,
+          posts: state.posts.map(element => {
+            if (element._id == action.payload._id) {
+              element.isClosed = action.payload.isClosed;
+            }
+            return element;
+          }),
+        };
+      }
+
+      console.log(`CLOSE_POST`, state);
       return state;
 
     case postAction.INTERESTED_POST:
