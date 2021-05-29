@@ -11,9 +11,11 @@ import {
 import ActionSheet from 'react-native-actions-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImageGrid from './ImageGrid.js';
+import ImageView from 'react-native-image-viewing';
 import {screenHeight, screenWidth} from '../constants';
 const maxHeight = 450;
-function Post(props) {
+
+const Post = props => {
   const {
     post,
     user,
@@ -26,16 +28,27 @@ function Post(props) {
     jumToProfile,
   } = props;
   const [isInterested, setIsInterested] = useState(null);
-
+  const [images, setImages] = useState([]);
+  const [visible, setIsVisible] = useState(false);
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     setIsInterested(() => {
       let is = post.interestedList.includes(user._id);
       return !!is;
     });
   }, [post.interestedList]);
-  // useEffect(() => {
-  //   console.log(`post.image`, post.image);
-  // }, []);
+  useEffect(() => {
+    let tempImages = post.image.map(element => {
+      return {
+        uri: element.url,
+      };
+    });
+    setImages(tempImages);
+  }, [post.image]);
+  const choosedPhoto = index => {
+    setIndex(index);
+    setIsVisible(true);
+  };
   return (
     <TouchableOpacity
       style={styles.post}
@@ -112,6 +125,7 @@ function Post(props) {
         images={post.image}
         maxWidth={screenWidth}
         maxHeight={maxHeight}
+        choosedPhoto={choosedPhoto}
       />
       <View horizontal={true} style={styles.reactionContainer}>
         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -160,7 +174,7 @@ function Post(props) {
             size={26}
             name={isInterested ? 'bookmark' : 'bookmark-outline'}
             color="#66ccff"
-            style={{marginHorizontal: 4, marginVertical: 4}}
+            style={{marginHorizontal: 6, marginVertical: 6}}
           />
         </TouchableOpacity>
         <View style={styles.commentInput}>
@@ -178,9 +192,15 @@ function Post(props) {
           <MaterialCommunityIcons name="share" color="gray" size={26} />
         </TouchableOpacity>
       </View>
+      <ImageView
+        images={images}
+        imageIndex={index}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
+      />
     </TouchableOpacity>
   );
-}
+};
 
 export default Post;
 

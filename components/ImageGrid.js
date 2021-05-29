@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Image, Dimensions} from 'react-native';
 import {OneImage, TwoImages, ThreeImages, MoreImages} from './ViewImage';
 
-const ImageGrid = ({images, maxWidth, maxHeight}) => {
+const ImageGrid = ({images, maxWidth, maxHeight, choosedPhoto}) => {
   const [imgWidth, setImgWidth] = useState(null);
   const [imgHeight, setImgHeight] = useState(null);
 
@@ -64,6 +64,7 @@ const ImageGrid = ({images, maxWidth, maxHeight}) => {
           imgWidth={imgWidth}
           imgHeight={imgHeight}
           maxWidth={maxWidth}
+          choosedPhoto={choosedPhoto}
         />
       ) : images.length === 2 ? (
         <TwoImages
@@ -71,6 +72,7 @@ const ImageGrid = ({images, maxWidth, maxHeight}) => {
           imgWidth={imgWidth}
           imgHeight={imgHeight}
           maxWidth={maxWidth}
+          choosedPhoto={choosedPhoto}
         />
       ) : images.length === 3 ? (
         <ThreeImages
@@ -78,6 +80,7 @@ const ImageGrid = ({images, maxWidth, maxHeight}) => {
           imgWidth={imgWidth}
           imgHeight={imgHeight}
           maxWidth={maxWidth}
+          choosedPhoto={choosedPhoto}
         />
       ) : (
         <MoreImages
@@ -85,6 +88,7 @@ const ImageGrid = ({images, maxWidth, maxHeight}) => {
           imgWidth={imgWidth}
           imgHeight={imgHeight}
           maxWidth={maxWidth}
+          choosedPhoto={choosedPhoto}
         />
       )}
     </View>

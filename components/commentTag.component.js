@@ -1,14 +1,27 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import ImageGrid from './ImageGrid';
 import {screenHeight, screenWidth} from '../constants';
+import ImageView from 'react-native-image-viewing';
 const maxHeight = 350;
 const maxWidth = Math.floor(screenWidth / 2);
 function Comment(props) {
   const {comment} = props;
-  // useEffect(() => {
-  //   console.log(`comment`, comment);
-  // }, []);
+  const [images, setImages] = useState([]);
+  const [visible, setIsVisible] = useState(false);
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    let tempImages = comment.image.map(element => {
+      return {
+        uri: element.url,
+      };
+    });
+    setImages(tempImages);
+  }, [comment.image]);
+  const choosedPhoto = index => {
+    setIndex(index);
+    setIsVisible(true);
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.avatar}>
@@ -54,6 +67,7 @@ function Comment(props) {
                 images={comment.image}
                 maxWidth={maxWidth}
                 maxHeight={maxHeight}
+                choosedPhoto={choosedPhoto}
               />
             </View>
           </View>
@@ -69,6 +83,12 @@ function Comment(props) {
           {comment.created.slice(0, 10)}
         </Text>
       </View>
+      <ImageView
+        images={images}
+        imageIndex={index}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
+      />
     </View>
   );
 }
