@@ -25,7 +25,7 @@ import {
 } from '../../redux/actions/post.action';
 import {screenHeight, screenWidth} from '../../constants';
 
-import AnimatedHeader from '../../components/animatedHeader.component';
+import AnimatedHeader from '../../components/Header';
 import Post from '../../components/post.component';
 
 function UserProfileScreen(props) {

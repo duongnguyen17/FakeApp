@@ -19,13 +19,12 @@ const Post = props => {
   const {
     post,
     user,
-    gotoUserProfile,
     gotoComment,
     closePost,
     getPost,
     interestedPost,
     gotoPostDetail,
-    jumToProfile,
+    gotoProfile,
   } = props;
   const [isInterested, setIsInterested] = useState(null);
   const [images, setImages] = useState([]);
@@ -55,15 +54,14 @@ const Post = props => {
       activeOpacity={0.8}
       onPress={() => {
         getPost(post._id);
-        gotoPostDetail(post._id);
+        gotoComment(post._id);
+        //gotoPostDetail(post._id);
       }}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={styles.customListView}>
           <TouchableOpacity
             onPress={() => {
-              if (user._id == post.authorId) {
-                jumToProfile();
-              } else gotoUserProfile(post.authorId);
+              gotoProfile(post.authorId);
             }}>
             <Image
               style={styles.avatar}
@@ -80,7 +78,7 @@ const Post = props => {
             <View style={styles.namesWrapper}>
               <TouchableOpacity
                 onPress={() => {
-                  gotoUserProfile(post.authorId);
+                  gotoProfile(post.authorId);
                 }}>
                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                   {post.authorName}

@@ -52,7 +52,10 @@ const ProfileTab = () => {
 
 const TabBar = () => {
   return (
-    <MainTab.Navigator tabBarOptions={{showLabel: false}}>
+    <MainTab.Navigator
+      tabBarOptions={{showLabel: false}}
+      initialRouteName={'NotificationTab'}
+    >
       <MainTab.Screen
         name="HomeTab"
         component={HomeTab}

@@ -24,7 +24,11 @@ function Comment(props) {
   };
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.avatar}>
+      <TouchableOpacity
+        style={styles.avatar}
+        onPress={() => {
+          props.cmtOnPress(comment.authorId);
+        }}>
         <Image
           style={{
             borderRadius: 50,
@@ -45,7 +49,10 @@ function Comment(props) {
       <View style={{flexDirection: 'column', flex: 1}}>
         <View style={styles.comment}>
           <View style={{marginHorizontal: 10, marginTop: 5}}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                props.cmtOnPress(comment.authorId);
+              }}>
               <Text style={{fontWeight: '700', fontSize: 18}}>
                 {comment.authorName}
               </Text>

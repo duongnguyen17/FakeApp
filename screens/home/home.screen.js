@@ -7,10 +7,11 @@ import {
   Platform,
   StatusBar,
   RefreshControl,
-  Animated,
   Text,
+  Animated,
+  TouchableOpacity,
 } from 'react-native';
-import AnimatedHeader from '../../components/animatedHeader.component';
+import Header from '../../components/Header';
 import PostBar from '../../components/postBar.components';
 import Post from '../../components/post.component';
 import {TabActions, useIsFocused} from '@react-navigation/native';
@@ -21,17 +22,18 @@ import {
   interestedPost,
 } from '../../redux/actions/post.action';
 import {connect} from 'react-redux';
-import {TouchableOpacity} from 'react-native';
+
 function HomeScreen(props) {
+  const {auth, posts, index} = props;
   const [loading, setLoading] = useState(false);
-  // let headerHeight = useRef(new Animated.Value(0)).current;
   const isFocused = useIsFocused();
+
   useEffect(() => {
     if (isFocused) getPosts(0);
   }, [isFocused]);
 
   const getPosts = async index => {
-    await props.getListPost(props.user.token, index);
+    await props.getListPost(auth.token, index);
   };
   const gotoUserProfile = userId => {
     props.navigation.navigate('UserProfile', {_id: userId});
@@ -39,6 +41,11 @@ function HomeScreen(props) {
   const jumToProfile = () => {
     const jumpToAction = TabActions.jumpTo('ProfileTab');
     props.navigation.dispatch(jumpToAction);
+  };
+  const gotoProfile = userId => {
+    if (auth._id == userId) {
+      jumToProfile();
+    } else gotoUserProfile(userId);
   };
   const gotoComment = postId => {
     props.navigation.navigate('Comment', {_id: postId});
@@ -50,13 +57,13 @@ function HomeScreen(props) {
     props.navigation.navigate('CreatePostScreen');
   };
   const closePost = postId => {
-    props.closePost(props.user.token, postId);
+    props.closePost(auth.token, postId);
   };
   const getPost = async postId => {
-    await props.getPost(props.user.token, postId);
+    await props.getPost(auth.token, postId);
   };
   const interestedPost = postId => {
-    props.interestedPost(props.user.token, postId);
+    props.interestedPost(auth.token, postId);
   };
   const onRefresh = () => {
     setLoading(true);
@@ -65,54 +72,81 @@ function HomeScreen(props) {
       setLoading(false);
     }, 1000);
   };
-  // const morePosts = () => {
-  //   setLoading(true);
-  //   getPosts(index);
-  //   index += 20;
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 1000);
-  // };
   const morePost = () => {
-    getPosts(props.index + 20);
+    getPosts(index + 20);
   };
+  const gotoSearch = () => {
+    props.navigation.navigate('Search');
+  };
+  //làm cho header động
+  const headeHeight = new Animated.Value(0);
+  const _scroll_y = Animated.diffClamp(headeHeight, 0, 50);
+  const _header_height = _scroll_y.interpolate({
+    inputRange: [0, 50],
+    outputRange: [50, 0],
+  });
+
+  const _header_translate_y = _scroll_y.interpolate({
+    inputRange: [0, 50],
+    outputRange: [0, -50],
+  });
+
+  const _header_opacity = _scroll_y.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+  });
   return (
     <SafeAreaView style={styles.container}>
-      <AnimatedHeader
-        // headerHeight={headerHeight}
-        name={'HUST Share'}
-        color={'#ff0000'}
-        size={26}
-      />
-      <ScrollView
+      <Animated.View
+        style={[
+          styles.header,
+          {
+            height: _header_height,
+            transform: [{translateY: _header_translate_y}],
+            opacity: _header_opacity,
+          },
+        ]}>
+        <Header
+          name={'HUST Share'}
+          size={26}
+          color={'#ff0000'}
+          onPress={gotoSearch}
+        />
+      </Animated.View>
+      <Animated.ScrollView
+        style={styles.scrollView}
+        //showsVerticalScrollIndicator={false}
         bounces={false}
-        style={styles.listContainter}
-        // scrollEventThrottle={16}
-        // onScroll={Animated.event([
-        //   {nativeEvent: {contentOffset: {y: headerHeight}}},
-        // ])}
+        scrollEventThrottle={15}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {contentOffset: {y: headeHeight}},
+            },
+          ],
+          {useNativeDriver: false},
+        )}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }>
         <PostBar
           gotoUserProfile={gotoUserProfile}
           gotoCreatePostScreen={gotoCreatePostScreen}
-          avatar={props.user.avatar}
+          avatar={auth.avatar}
           jumToProfile={jumToProfile}
         />
 
-        {props.posts.map((value, index) => (
+        {posts.map((value, index) => (
           <Post
             key={index}
-            user={props.user}
+            user={auth}
             post={value}
-            gotoUserProfile={gotoUserProfile}
             gotoComment={gotoComment}
             closePost={closePost}
             interestedPost={interestedPost}
             gotoPostDetail={gotoPostDetail}
             getPost={getPost}
-            jumToProfile={jumToProfile}
+            gotoProfile={gotoProfile}
           />
         ))}
         <TouchableOpacity
@@ -137,12 +171,12 @@ function HomeScreen(props) {
             More Posts
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
 const mapStateToProp = state => ({
-  user: {
+  auth: {
     _id: state.auth._id,
     username: state.auth.username,
     avatar: state.auth.avatar,
@@ -163,5 +197,20 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  listContainter: {},
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    backgroundColor: '#fff',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
 });

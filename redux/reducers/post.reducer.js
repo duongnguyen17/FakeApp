@@ -67,8 +67,14 @@ const reducer = (state = defaultState, action) => {
       return state;
 
     case postAction.GET_LIST_COMMENTS:
-      state.post.commentList = action.payload.commentList;
-      state = {...sate};
+      state = {
+        ...state,
+        post: {
+          ...state.post,
+          commentList: action.payload.commentList,
+        },
+      };
+      //console.log(`state.post.commentList`, state.post.commentList);
       return state;
 
     case postAction.CLOSE_POST:

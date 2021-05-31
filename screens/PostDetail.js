@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -24,9 +24,41 @@ import {createFormData} from './createPostScreen.screen';
 import {screenWidth} from '../constants';
 import {TabActions} from '@react-navigation/native';
 const PostDetail = props => {
-  const {auth, post} = props;
+  const {auth, post, commentList} = props;
   const [photo, setPhoto] = useState(null);
   const [described, setDescribed] = useState('');
+  let update = useRef(null).current;
+
+  useEffect(() => {
+    props.getPost(auth.token, props.route.params._id);
+    updateCommentList();
+    return () => {
+      clearInterval(update);
+    };
+  }, []);
+
+  const getListComment = async () => {
+    //console.log('object');
+    await props.getListComment(auth.token, post._id);
+  };
+  const updateCommentList = () => {
+    update = setInterval(getListComment, 3000);
+  };
+  const gotoUserProfile = userId => {
+    props.navigation.navigate('UserProfile', {_id: userId});
+  };
+  const jumToProfile = () => {
+    console.log('object');
+    const jumpToAction = TabActions.jumpTo('ProfileTab');
+    props.navigation.dispatch(jumpToAction);
+    props.navigation.goBack();
+  };
+  const cmtOnPress = userId => {
+    // if (auth._id == userId) {
+    //   jumToProfile();
+    // } else
+    gotoUserProfile(userId);
+  };
   const choosedPhoto = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response) {
@@ -57,16 +89,19 @@ const PostDetail = props => {
   return (
     <GestureRecognizer
       onSwipeLeft={state => {
-        console.log('object');
-        const jumpToAction = TabActions.jumpTo('TabBar');
-        props.navigation.dispatch(jumpToAction);
+        //console.log('onSwipeLeft');
+        props.navigation.goBack();
+      }}
+      onSwipeRight={state => {
+        //console.log('onSwipeRight');
+        props.navigation.goBack();
       }}
       style={{flex: 1}}
       config={config}>
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          {post.commentList.map((value, index) => (
-            <Comment key={index} comment={value} />
+          {commentList.map((value, index) => (
+            <Comment key={index} comment={value} cmtOnPress={cmtOnPress} />
           ))}
         </ScrollView>
         <View style={styles.inputComment}>
@@ -135,6 +170,7 @@ const mapStateToProp = state => ({
     token: state.auth.token,
   },
   post: state.posts.post,
+  commentList: state.posts.post.commentList,
 });
 const mapDispatchToProp = {
   getListComment,

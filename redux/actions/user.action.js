@@ -94,7 +94,60 @@ export const getListFollow = token => async dispatch => {
     console.log(error);
   }
 };
+//lấy danh sách notification
+export const getListNotification = token => async dispatch => {
+  const taskURI = `${BASE_URL}/user/get_notification?token=${token}`;
+  try {
+    const res = await axios.get(taskURI);
+    if (res.data.code === apiConstantsCode.OK) {
+      dispatch(getListNotificationSuccess(res.data.data));
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+//xem thông báo
+export const seeNotification = async (token, notificationId) => {
+  const taskURI = `${BASE_URL}/user/see_notification?token=${token}&notificationId=${notificationId}`;
+  try {
+    const res = await axios.post(taskURI);
+    if (res.data.code !== apiConstantsCode.OK) {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+//lấy số thông báo chưa xem
+export const getNotificationUnseen = token => async dispatch => {
+  const taskURI = `${BASE_URL}/user/get_notificationUnseen?token=${token}`;
+  try {
+    const res = await axios.get(taskURI);
+    if (res.data.code === apiConstantsCode.OK) {
+      dispatch(getNotificationUnseenSuccess(res.data.data.notificationUnseen));
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+// đánh dấu toàn bộ là đã xem
+export const seeAllNotification = async token => {
+  const taskURI = `${BASE_URL}/user/see_all_notificationUnseen?token=${token}`;
+  try {
+    const res = await axios.post(taskURI);
+    if (res.data.code !== apiConstantsCode.OK) {
+      throw new Error(res.data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+//logout
 export const logout = token => async dispatch => {
   const taskURI = `${BASE_URL}/user/logout?token=${token}`;
   try {
@@ -141,5 +194,15 @@ export const getUserPostSuccess = data => ({
 
 export const changeAuthSuccess = data => ({
   type: authAction.CHANGE_AUTH,
+  payload: data,
+});
+
+export const getListNotificationSuccess = data => ({
+  type: userAction.GET_NOTIFICATION,
+  payload: data,
+});
+
+export const getNotificationUnseenSuccess = data => ({
+  type: userAction.GET_NOTIFICATIONUNSEEN,
   payload: data,
 });

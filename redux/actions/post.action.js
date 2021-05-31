@@ -154,12 +154,13 @@ export const getListComment = (token, postId) => async dispatch => {
         _id: postId,
         commentList: res.data.data,
       };
+      //console.log(`CommentList`, data);
       dispatch(getListCommentSuccess(data));
     } else {
       throw new Error(res.data.message);
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 

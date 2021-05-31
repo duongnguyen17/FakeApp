@@ -9,12 +9,20 @@ import {
 } from 'react-native';
 const screenWidth = Math.round(Dimensions.get('window').width);
 function Notification(props) {
-  const {avatar, name, content, postId, time, gotoPost} = props;
+  const {notification, isSeen} = props;
 
   return (
-    <TouchableOpacity style={styles.notification} onPress={() => {
-      gotoPost(postId)
-    }}> 
+    <TouchableOpacity
+      style={[
+        styles.notification,
+        {backgroundColor: isSeen ? '#fff' : '#b3d9ff'},
+      ]}
+      onPress={() => {
+        if (!isSeen) {
+          props.seeNotification(notification._id);
+        }
+        props.gotoPostDetail(notification.postId);
+      }}>
       <View
         style={{
           marginHorizontal: 10,
@@ -22,10 +30,26 @@ function Notification(props) {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        <Image style={styles.avatar} source={{uri: avatar}} />
+        <Image
+          style={styles.avatar}
+          source={
+            notification.authorAvatar == null ||
+            posnotificationt.authorAvatar == undefined ||
+            notification.authorAvatar == ''
+              ? require('../assets/avatar_null.jpg')
+              : {uri: notification.authorAvatar}
+          }
+        />
         <View style={{flexDirection: 'column', width: screenWidth - 80}}>
-          <Text style={styles.name}>{name}</Text><Text>{content}</Text>
-          <Text style={{fontSize: 13, color: 'gray'}}>{time}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={[styles.textNoti, {fontWeight: 'bold'}]}>
+              {notification.authorName}{' '}
+            </Text>
+            <Text style={styles.textNoti}>{notification.described}</Text>
+          </View>
+          <Text style={{fontSize: 13, color: 'gray'}}>
+            {notification.created.slice(0, 10)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -34,18 +58,14 @@ function Notification(props) {
 export default Notification;
 const styles = StyleSheet.create({
   notification: {
-    marginTop: 3,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: {height: 0, width: 0},
-    height: 90,
+    minHeight: 85,
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 50,
   },
-  name:{
-  }
+  textNoti: {
+    fontSize: 18,
+  },
 });

@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {screenWidth} from '../constants';
 import {connect} from 'react-redux';
 import Comment from '../components/commentTag.component';
-import {StackActions} from '@react-navigation/native';
+import {StackActions, TabActions} from '@react-navigation/native';
 import {
   getPost,
   getListComment,
@@ -30,6 +30,20 @@ function CommentScreen(props) {
   // useEffect(() => {
   //   console.log(`post.commentList`, post.commentList);
   // }, [...props.post]);
+  const gotoUserProfile = userId => {
+    props.navigation.navigate('UserProfile', {_id: userId});
+  };
+
+  const jumToProfile = () => {
+    const jumpToAction = TabActions.jumpTo('ProfileTab');
+    props.navigation.dispatch(jumpToAction);
+    props.navigation.goBack();
+  };
+  const cmtOnPress = userId => {
+    if (auth._id == userId) {
+      jumToProfile();
+    } else gotoUserProfile(userId);
+  };
   const choosedPhoto = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response) {
@@ -57,7 +71,7 @@ function CommentScreen(props) {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {post.commentList.map((value, index) => (
-          <Comment key={index} comment={value} />
+          <Comment key={index} comment={value} cmtOnPress={cmtOnPress} />
         ))}
       </ScrollView>
       <View style={styles.inputComment}>

@@ -7,6 +7,8 @@ const defaultState = {
   username: '',
   avatar: '',
   error: '',
+  notificationUnseen: 0,
+  notification: [],
 };
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
@@ -58,11 +60,23 @@ const reducer = (state = defaultState, action) => {
       };
       return state;
     case authAction.CHANGE_AUTH:
-      console.log(`object`, action.payload);
+      // console.log(`object`, action.payload);
       state = {
         ...state,
         username: action.payload.username,
         avatar: action.payload.avatar,
+      };
+      return state;
+    case userAction.GET_NOTIFICATION:
+      state = {
+        ...state,
+        notification: action.payload,
+      };
+      return state;
+    case userAction.GET_NOTIFICATIONUNSEEN:
+      state = {
+        ...state,
+        notificationUnseen: action.payload,
       };
       return state;
     default:
