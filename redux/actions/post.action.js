@@ -5,6 +5,7 @@ import axios from 'axios';
 //lấy danh sách bài viết
 export const getListPost = (token, index, userId) => async dispatch => {
   let taskURI = '';
+   if (index == null || index == undefined) index = 0;
   if (userId == undefined)
     taskURI = `${BASE_URL}/post/get_list_posts?token=${token}&index=${index}`;
   else

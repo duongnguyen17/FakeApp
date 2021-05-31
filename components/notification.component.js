@@ -34,19 +34,18 @@ function Notification(props) {
           style={styles.avatar}
           source={
             notification.authorAvatar == null ||
-            posnotificationt.authorAvatar == undefined ||
+            notification.authorAvatar == undefined ||
             notification.authorAvatar == ''
               ? require('../assets/avatar_null.jpg')
               : {uri: notification.authorAvatar}
           }
         />
         <View style={{flexDirection: 'column', width: screenWidth - 80}}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={[styles.textNoti, {fontWeight: 'bold'}]}>
-              {notification.authorName}{' '}
-            </Text>
-            <Text style={styles.textNoti}>{notification.described}</Text>
-          </View>
+          <Text style={styles.textNoti}>
+            <Text style={{fontWeight: 'bold'}}>{notification.authorName} </Text>
+            {notification.described}
+          </Text>
+
           <Text style={{fontSize: 13, color: 'gray'}}>
             {notification.created.slice(0, 10)}
           </Text>

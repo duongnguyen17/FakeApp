@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -24,16 +24,25 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {createFormData} from './createPostScreen.screen';
 
 function CommentScreen(props) {
-  const {auth, post} = props;
+  const {auth, commentList} = props;
   const [photo, setPhoto] = useState(null);
   const [described, setDescribed] = useState('');
-  // useEffect(() => {
-  //   console.log(`post.commentList`, post.commentList);
-  // }, [...props.post]);
+  let update = useRef(null).current;
+  useEffect(() => {
+    updateCommentList();
+    return () => {
+      clearInterval(update);
+    };
+  }, []);
   const gotoUserProfile = userId => {
     props.navigation.navigate('UserProfile', {_id: userId});
   };
-
+  const getListComment = async () => {
+    await props.getListComment(auth.token, post._id);
+  };
+  const updateCommentList = () => {
+    update = setInterval(getListComment, 3000);
+  };
   const jumToProfile = () => {
     const jumpToAction = TabActions.jumpTo('ProfileTab');
     props.navigation.dispatch(jumpToAction);
@@ -60,7 +69,7 @@ function CommentScreen(props) {
       const data = createFormData(photo, {described: described});
       // gọi đến dispatch
       props.commentPost(auth.token, post._id, data);
-      props.navigation.dispatch(StackActions.replace('Comment'));
+      setDescribed('');
     }
   };
   const checkContent = () => {
@@ -70,7 +79,7 @@ function CommentScreen(props) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        {post.commentList.map((value, index) => (
+        {commentList.map((value, index) => (
           <Comment key={index} comment={value} cmtOnPress={cmtOnPress} />
         ))}
       </ScrollView>
@@ -99,6 +108,7 @@ function CommentScreen(props) {
             onChangeText={text => {
               setDescribed(text);
             }}
+            value={described}
           />
           <View>
             <MaterialCommunityIcons
@@ -137,7 +147,7 @@ const mapStateToProp = state => ({
     avatar: state.auth.avatar,
     token: state.auth.token,
   },
-  post: state.posts.post,
+  commentList: state.posts.post.commentList,
 });
 const mapDispatchToProp = {
   getListComment,

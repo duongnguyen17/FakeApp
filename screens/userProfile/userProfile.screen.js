@@ -156,6 +156,7 @@ function UserProfileScreen(props) {
           <Post
             key={index}
             user={auth}
+            images={value.image}
             post={value}
             gotoUserProfile={gotoUserProfile}
             gotoComment={gotoComment}

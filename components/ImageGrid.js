@@ -1,14 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Image, Dimensions} from 'react-native';
 import {OneImage, TwoImages, ThreeImages, MoreImages} from './ViewImage';
 
-const ImageGrid = ({images, maxWidth, maxHeight, choosedPhoto}) => {
+const ImageGrid = props => {
+  const {images, maxWidth, maxHeight, choosedPhoto} = props;
   const [imgWidth, setImgWidth] = useState(null);
   const [imgHeight, setImgHeight] = useState(null);
+  const update = useRef(null);
 
   useEffect(() => {
+    update.current = true;
     calView();
-  }, []);
+    return () => {
+      update.current = false;
+    };
+  }, [images]);
 
   const calView = () => {
     switch (images.length) {
@@ -17,41 +23,56 @@ const ImageGrid = ({images, maxWidth, maxHeight, choosedPhoto}) => {
       case 1:
         Image.getSize(images[0].url, (width, height) => {
           if (width / height < maxWidth / maxHeight) {
-            setImgWidth(maxWidth);
-            setImgHeight(maxHeight);
+            if (update.current) {
+              setImgWidth(maxWidth);
+              setImgHeight(maxHeight);
+            }
           } else {
-            setImgHeight(Math.floor(maxWidth * (height / width)));
-            setImgWidth(maxWidth);
+            if (update.current) {
+              setImgHeight(Math.floor(maxWidth * (height / width)));
+              setImgWidth(maxWidth);
+            }
           }
         });
         break;
       case 2:
-        setImgWidth(Math.floor(maxWidth / 2 - 1));
+        if (update.current) {
+          setImgWidth(Math.floor(maxWidth / 2 - 1));
+        }
+
         Image.getSize(images[0].url, (width1, height1) => {
           Image.getSize(images[1].url, (width2, height2) => {
             if (height1 < height2) {
               // console.log(`height2`, height2);
-              if (height2 > maxHeight) setImgHeight(maxHeight);
-              else {
-                setImgHeight(height2);
+              if (update.current) {
+                if (height2 > maxHeight) setImgHeight(maxHeight);
+                else {
+                  setImgHeight(height2);
+                }
               }
             } else {
               // console.log(`height1`, height1);
-              if (height1 > maxHeight) setImgHeight(maxHeight);
-              else {
-                setImgHeight(height1);
+              if (update.current) {
+                if (height1 > maxHeight) setImgHeight(maxHeight);
+                else {
+                  setImgHeight(height1);
+                }
               }
             }
           });
         });
         break;
       case 3:
-        setImgWidth(Math.floor(maxWidth / 2 - 1));
-        setImgHeight(maxWidth);
+        if (update.current) {
+          setImgWidth(Math.floor(maxWidth / 2 - 1));
+          setImgHeight(maxWidth);
+        }
         break;
       default:
-        setImgWidth(Math.floor(maxWidth / 2 - 1));
-        setImgHeight(maxWidth);
+        if (update.current) {
+          setImgWidth(Math.floor(maxWidth / 2 - 1));
+          setImgHeight(maxWidth);
+        }
         break;
     }
   };

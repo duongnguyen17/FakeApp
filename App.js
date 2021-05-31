@@ -54,8 +54,7 @@ const TabBar = () => {
   return (
     <MainTab.Navigator
       tabBarOptions={{showLabel: false}}
-      initialRouteName={'NotificationTab'}
-    >
+      initialRouteName={'HomeTab'}>
       <MainTab.Screen
         name="HomeTab"
         component={HomeTab}

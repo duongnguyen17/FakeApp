@@ -27,7 +27,7 @@ function HomeScreen(props) {
   const {auth, posts, index} = props;
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
-
+  //console.log(`posts[0]`, posts[0]);
   useEffect(() => {
     if (isFocused) getPosts(0);
   }, [isFocused]);
@@ -141,6 +141,7 @@ function HomeScreen(props) {
             key={index}
             user={auth}
             post={value}
+            images={value.image}
             gotoComment={gotoComment}
             closePost={closePost}
             interestedPost={interestedPost}

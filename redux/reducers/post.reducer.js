@@ -42,12 +42,12 @@ const reducer = (state = defaultState, action) => {
       state = {
         ...state,
         posts:
-          action.payload.index == 0
+          action.payload.index === 0
             ? action.payload.posts
             : state.posts.concat(action.payload.posts),
         index: action.payload.index,
       };
-      //console.log(`GET_LIST_POSTS`, state);
+      //console.log(`GET_LIST_POSTS`, state.posts[0]);
       return state;
 
     case postAction.ADD_POST:

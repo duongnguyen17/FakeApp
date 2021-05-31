@@ -19,6 +19,7 @@ const Post = props => {
   const {
     post,
     user,
+    images,
     gotoComment,
     closePost,
     getPost,
@@ -26,8 +27,9 @@ const Post = props => {
     gotoPostDetail,
     gotoProfile,
   } = props;
+  //console.log(`post`, post);
   const [isInterested, setIsInterested] = useState(null);
-  const [images, setImages] = useState([]);
+  const [imageURI, setImageURI] = useState([]);
   const [visible, setIsVisible] = useState(false);
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -37,13 +39,14 @@ const Post = props => {
     });
   }, [post.interestedList]);
   useEffect(() => {
-    let tempImages = post.image.map(element => {
+    let tempImages = images.map(element => {
       return {
         uri: element.url,
       };
     });
-    setImages(tempImages);
-  }, [post.image]);
+    //console.log('object', images);
+    setImageURI(tempImages);
+  }, [images]);
   const choosedPhoto = index => {
     setIndex(index);
     setIsVisible(true);
@@ -120,7 +123,7 @@ const Post = props => {
         </TouchableOpacity>
       ))} */}
       <ImageGrid
-        images={post.image}
+        images={images}
         maxWidth={screenWidth}
         maxHeight={maxHeight}
         choosedPhoto={choosedPhoto}
@@ -191,7 +194,7 @@ const Post = props => {
         </TouchableOpacity>
       </View>
       <ImageView
-        images={images}
+        images={imageURI}
         imageIndex={index}
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
