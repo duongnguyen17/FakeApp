@@ -80,19 +80,19 @@ function HomeScreen(props) {
   };
   //làm cho header động
   const headeHeight = new Animated.Value(0);
-  const _scroll_y = Animated.diffClamp(headeHeight, 0, 50);
+  const _scroll_y = Animated.diffClamp(headeHeight, 0, 65);
   const _header_height = _scroll_y.interpolate({
-    inputRange: [0, 50],
-    outputRange: [50, 0],
+    inputRange: [0, 65],
+    outputRange: [65, 0],
   });
 
   const _header_translate_y = _scroll_y.interpolate({
-    inputRange: [0, 50],
-    outputRange: [0, -50],
+    inputRange: [0, 65],
+    outputRange: [0, -65],
   });
 
   const _header_opacity = _scroll_y.interpolate({
-    inputRange: [0, 50],
+    inputRange: [0, 65],
     outputRange: [1, 0],
   });
   return (

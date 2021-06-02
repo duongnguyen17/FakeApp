@@ -126,19 +126,19 @@ function UserProfileScreen(props) {
             </View>
           </View>
 
-          {isOwner ? (
-            <TouchableOpacity
-              style={{position: 'absolute', right: 0, top: 0}}
-              onPress={() => {
-                actionSheetRef.current.show();
-              }}>
-              <MaterialCommunityIcons
-                name="account-settings"
-                size={20}
-                style={{marginVertical: 10, marginHorizontal: 10}}
-              />
-            </TouchableOpacity>
-          ) : null}
+          {/* {isOwner ? ( */}
+          <TouchableOpacity
+            style={{position: 'absolute', right: 0, top: 0}}
+            onPress={() => {
+              actionSheetRef.current.show();
+            }}>
+            <MaterialCommunityIcons
+              name="account-settings"
+              size={20}
+              style={{marginVertical: 10, marginHorizontal: 10}}
+            />
+          </TouchableOpacity>
+          {/* ) : null} */}
 
           <View
             style={{

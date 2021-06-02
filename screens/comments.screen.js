@@ -24,7 +24,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {createFormData} from './createPostScreen.screen';
 
 function CommentScreen(props) {
-  const {auth, commentList} = props;
+  const {auth, post, commentList} = props;
   const [photo, setPhoto] = useState(null);
   const [described, setDescribed] = useState('');
   let update = useRef(null).current;
@@ -70,6 +70,7 @@ function CommentScreen(props) {
       // gọi đến dispatch
       props.commentPost(auth.token, post._id, data);
       setDescribed('');
+      setPhoto(null);
     }
   };
   const checkContent = () => {
@@ -115,7 +116,7 @@ function CommentScreen(props) {
               onPress={() => {
                 Keyboard.dismiss();
                 console.log('object');
-                if (props.post.isClosed) {
+                if (post.isClosed) {
                   ToastAndroid.show('post da dong', ToastAndroid.SHORT);
                 } else {
                   submit();
@@ -147,6 +148,7 @@ const mapStateToProp = state => ({
     avatar: state.auth.avatar,
     token: state.auth.token,
   },
+  post: state.posts.post,
   commentList: state.posts.post.commentList,
 });
 const mapDispatchToProp = {

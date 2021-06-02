@@ -4,7 +4,7 @@ import ImageGrid from './ImageGrid';
 import {screenHeight, screenWidth} from '../constants';
 import ImageView from 'react-native-image-viewing';
 const maxHeight = 350;
-const maxWidth = Math.floor(screenWidth / 2);
+const maxWidth = Math.floor((3 * screenWidth) / 4);
 function Comment(props) {
   const {comment} = props;
   const [images, setImages] = useState([]);
