@@ -14,9 +14,10 @@ const defaultState = {
     address: null,
     intro: null,
     avatar: null,
-    followNum: 1,
+    followNum: 0,
   },
   isOwner: true,
+  isFollow: false,
 };
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
@@ -42,6 +43,7 @@ const reducer = (state = defaultState, action) => {
           ...state.userData,
           followList: state.userData.followList.push(action.payload),
         },
+        isFollow: !state.isFollow,
       };
       return state;
     case userAction.GET_LIST_INTERESTED:
@@ -72,6 +74,7 @@ const reducer = (state = defaultState, action) => {
           followNum: 1,
         },
         isOwner: true,
+        isFollow: false,
       };
       return state;
     default:

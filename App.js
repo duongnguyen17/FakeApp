@@ -17,6 +17,8 @@ import ChangeProfileScreen from './screens/userProfile/changeProfile.screen';
 import Comment from './screens/comments.screen';
 import CreatePostScreen from './screens/createPostScreen.screen';
 import PostDetail from './screens/PostDetail';
+import FollowList from './screens/FollowList';
+import InterestedPosts from './screens/InterestedPosts';
 
 const Stack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -149,6 +151,11 @@ const App = () => {
             name="PostDetail"
             component={PostDetail}
             options={{headerShown: false}}
+          />
+          <MainStack.Screen name="FollowList" component={FollowList} />
+          <MainStack.Screen
+            name="InterestedPosts"
+            component={InterestedPosts}
           />
         </MainStack.Navigator>
       </NavigationContainer>

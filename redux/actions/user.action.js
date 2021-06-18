@@ -69,15 +69,18 @@ export const getListInterested = (token, index) => async dispatch => {
 //follow người khác
 export const followOther = (token, userId) => async dispatch => {
   const taskURI = `${BASE_URL}/user/follow_other?token=${token}&userId=${userId}`;
+  //console.log(`taskURI`, taskURI);
   try {
     const res = await axios.post(taskURI);
+    //console.log(`res.data`, res.data);
     if (res.data.code === apiConstantsCode.OK) {
-      dispatch(followOtherSuccess(res.data.data));
+      //console.log(`followOther`, res.data.data);
+      dispatch(followOtherSuccess(res.data.data.followNum));
     } else {
       throw new Error(res.data.message);
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 //lấy danh sách những người đã follow

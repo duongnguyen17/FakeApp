@@ -16,7 +16,7 @@ import {StackActions, useIsFocused} from '@react-navigation/native';
 import ActionSheet from 'react-native-actions-sheet';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {logout} from '../../redux/actions/auth.action';
-import {getUserInfor} from '../../redux/actions/user.action';
+import {getUserInfor, followOther} from '../../redux/actions/user.action';
 import {
   getListPost,
   getPost,
@@ -29,7 +29,17 @@ import AnimatedHeader from '../../components/Header';
 import Post from '../../components/post.component';
 
 function UserProfileScreen(props) {
-  const {auth, user, isOwner, posts, post, index, route} = props;
+  const {
+    auth,
+    user,
+    isOwner,
+    isFollow,
+    followNum,
+    posts,
+    post,
+    index,
+    route,
+  } = props;
   const actionSheetRef = useRef();
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
@@ -73,9 +83,11 @@ function UserProfileScreen(props) {
       setLoading(false);
     }, 1000);
   };
-
   const morePost = () => {
     getPosts(props.index + 20);
+  };
+  const followOther = userId => {
+    props.followOther(auth.token, userId);
   };
   return (
     <SafeAreaView>
@@ -122,6 +134,10 @@ function UserProfileScreen(props) {
               <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Address: </Text>
                 <Text style={{flex: 1}}>{user.address}</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{fontWeight: 'bold'}}>Follower: </Text>
+                <Text style={{flex: 1}}>{followNum}</Text>
               </View>
             </View>
           </View>
@@ -190,23 +206,53 @@ function UserProfileScreen(props) {
         </TouchableOpacity>
       </ScrollView>
       <ActionSheet ref={actionSheetRef}>
-        <TouchableOpacity
-          style={styles.option}
-          onPress={() => {
-            actionSheetRef.current.hide();
-            props.navigation.navigate('ChangeProfile');
-          }}>
-          <Text style={styles.textOption}>Change profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.option}
-          onPress={() => {
-            actionSheetRef.current.hide();
-            props.navigation.dispatch(StackActions.popToTop());
-            props.logout(auth.token);
-          }}>
-          <Text style={{...styles.textOption, color: 'red'}}>Logout</Text>
-        </TouchableOpacity>
+        {isOwner ? (
+          <View>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => {
+                actionSheetRef.current.hide();
+              }}>
+              <Text style={styles.textOption}>Interested Posts</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => {
+                actionSheetRef.current.hide();
+                props.navigation.navigate('FollowList');
+              }}>
+              <Text style={styles.textOption}>Follow List</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => {
+                actionSheetRef.current.hide();
+                props.navigation.navigate('ChangeProfile');
+              }}>
+              <Text style={styles.textOption}>Change profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => {
+                actionSheetRef.current.hide();
+                props.navigation.dispatch(StackActions.popToTop());
+                props.logout(auth.token);
+              }}>
+              <Text style={{...styles.textOption, color: 'red'}}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => {
+              actionSheetRef.current.hide();
+              followOther(user._id);
+            }}>
+            <Text style={styles.textOption}>
+              {isFollow ? ' Unfollow' : 'Follow'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </ActionSheet>
     </SafeAreaView>
   );
@@ -221,6 +267,8 @@ const mapStateToProp = state => ({
   },
   user: state.user.userData,
   isOwner: state.user.isOwner,
+  followNum: state.user.followNum,
+  isFollow: state.user.isFollow,
   posts: state.posts.posts,
   post: state.posts.post,
   index: state.posts.index,
@@ -233,6 +281,7 @@ const mapDispatchToProp = {
   getPost,
   interestedPost,
   closePost,
+  followOther,
 };
 
 export default connect(mapStateToProp, mapDispatchToProp)(UserProfileScreen);
